@@ -2,6 +2,7 @@
 
 const Game = function() {
 	console.log("Inside \"game.js\".");
+	document.getElementById("main-content").innerHTML += "<br>Inside \"game.js\".";
 
 	//Declare constants and variables
 	const self = this;
@@ -131,6 +132,7 @@ const Game = function() {
 	}
 
 	console.log("End of \"game.js\".");
+	document.getElementById("main-content").innerHTML += "<br>End of \"game.js\".";
 };
 
 const game = new Game();

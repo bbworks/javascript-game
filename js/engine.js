@@ -1,5 +1,6 @@
 function Engine (fps, update, render) {
 	console.log("Inside \"engine.js\".");
+	document.getElementById("main-content").innerHTML += "<br>Inside \"engine.js\".";
 
 	//Declare private constants and variables
   var lastTimestamp = window.performance.now();
@@ -27,6 +28,7 @@ function Engine (fps, update, render) {
   //Declare public functions
 	this.start = function() {
 		console.log("engine.start()");
+		document.getElementById("main-content").innerHTML += "<br>engine.start().";
 		isRunning = true;
 		self.run();
   };
@@ -44,6 +46,7 @@ function Engine (fps, update, render) {
 
 	this.stop = function() {
 		console.log("engine.stop()");
+		document.getElementById("main-content").innerHTML += "<br>enginge.stop().";
 	  cancelAnimationFrame(animationFrame);
 		isRunning = false;
   };

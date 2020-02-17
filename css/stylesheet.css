@@ -1,8 +1,5 @@
 body {
-  background-color: #fff; /*white rgb(255,255,255)*/
-  color: #bdbdbd;
   height: 100vh;
-  font-family: Helvetica neue, roboto;
 }
 
 body, body * {
@@ -21,26 +18,34 @@ img {
   height: 56px;
 }
 
-h1 {
-  font-weight: lighter;
-}
-
-canvas {
-  border: 1px solid lightGray /*#d3d3d3 rgb(211,211,211)*/;
-}
-
 header {
   background-image: url("../assets/question_block_8bit_sticker.jpg");
   background-size: 32px;
   background-repeat: repeat;
 }
 
+header h1 {
+  font-weight: lighter;
+  background-color: #fff; /*white rgb(255,255,255)*/
+  color: #bdbdbd;
+  font-family: Helvetica neue, roboto;
+}
+
 header > div {
   background-color: rgba(255,255,255,0.3);
 }
 
+main h1 {
+  text-align: center;
+  font-size: 36px;
+  padding: 30px 0px 20px 0px;
+}
+
+canvas {
+  border: 1px solid lightGray /*#d3d3d3 rgb(211,211,211)*/;
+}
+
 .content {
-  padding-top: 50px;
   background-color: rgb(250,250,250);
 }
 
