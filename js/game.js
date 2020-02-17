@@ -81,11 +81,11 @@ const Game = function() {
 		for (var button in self.screenController) {
 			self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
 			self.screenController[button].style = "background-color:rgba(255,0,0,0.5);border:none;text-decoration:none;";
-			self.screenController[button].addEventListener("mousedown", function() {
+			self.screenController[button].addEventListener("touchstart", function() {
 				console.log("Button "+this.name+" pressed.");
 				self.controller[this.name] = true;
 			});
-			self.screenController[button].addEventListener("mouseup", function() {
+			self.screenController[button].addEventListener("touchend", function() {
 				console.log("Button un-pressed.");
 				self.controller[this.name] = false;
 			});
