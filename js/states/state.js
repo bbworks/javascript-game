@@ -72,6 +72,7 @@ function State(name, objectInfo, update, render, onEnter, onExit, game, callback
             self.audio = new Audio();
             self.audio.addEventListener("canplaythrough", onload);
             self.audio.src = item.src;
+            self.audio.load();
             break;
           case "player":
             self.object[item.name] = new Player(5, game.context.canvas.height-24-16-1, 20, 24, 2, 0, game.context);
