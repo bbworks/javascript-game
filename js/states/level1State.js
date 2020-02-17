@@ -16,7 +16,7 @@ function Level1State (game, callback) {
     {name:"player",type:"player",src:"assets/rabbit-trap.png"},
     //{name:"tree",type:"image",src:"https://external-preview.redd.it/F_If_-XcfBi0DkStwGndtl9yCrRFGN1APiTXoEtzDG4.png?auto=webp&s=b444f2782399ba6e4d3457b041cd6c78eba4feda"},
     //{name:"cloud",type:"image",src:"https://www.trzcacak.rs/myfile/full/39-395837_8-bit-clouds-png-circle.png"},
-    {name:"level1Audio",type:"audio",src:"https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/sawsquarenoise/Towel_Defence_OST/sawsquarenoise_-_10_-_Towel_Defence_Ending.mp3"}
+    {name:"level1Audio",type:"audio",src:"assets/sawsquarenoise_-_10_-_Towel_Defence_Ending.mp3"}
   ];
   const self = this;
 
