@@ -1,0 +1,79 @@
+SCRATCHPAD
+
+##FILES
+  index.html   // contains canvas, loads <script>s
+  /js/         // Main JS root.
+  - game.js    // Contains game info
+  - engine.js  // Runs update & render at set interval
+  - players/   // Contains all enemy/character-related modules
+  - states/    // Contains the main world classes and all levels
+  //- utils/   // Contains global constants/utility functions
+
+##LAST OBJECTIVE
+  X ...make it scroll?
+    * implemented a Viewport class inside of game
+    * switched to passing entire game object into all objects instead of "necessities" inside game.world
+    * implemented a renderX, renderY, getRenderX(), getRenderY(), and scroll() method in base GameObject class
+    * changed Player and Tilesheet render() to render at getRenderX() and getRenderY()--it scrollssss
+  _ implement a state system for objects?
+  /*
+      const StateMachine = function(initialState, transitions) {
+        this.state = initialState;
+        this.transitions = transitions;
+      }
+      StateMachine.prototype = {
+        constructor: StateMachine,
+        next: function() {
+          this.state = this.transitions[this.state].next();
+        }
+      }
+      const state = new StateMachine(
+        "notReady",
+        {
+          notReady: {next: () => "ready"},
+          ready: {next: () => "set"},
+          set: {next: () => "go"},
+          go: {next: function() {console.log("AHHHH"); return "notReady"}},
+        }
+      )
+      state.next();
+  */
+  X so, pause mainMenu
+    * this got complicated--to pause, we need to maintain our assets from the previous state, switch states, then upon exiting the pause state, bring the old asset's objects back
+    * before we were assigning all objects to game.world--if I assign pause's objects to game.world (none), there are no level1 objects to return to...
+    * smarter idea--we save all stateful objects to the STATE, then upon loading them all, assign the state's objects to game.world's objects--this way we keep them in the state
+    * now I need to re-write the engine code..have been skating around on thin code but I NEED to get it working as it should (bandaids on if mainmenu {engine.start} )
+    * fixed engine--created engine.run(), changed engine.start() and engine.stop()--they simply set isRunning var to set things in motion/stop things from doing anything further
+    * now I'm running into an issue where I create the next state in game.state.update, WAY BEFORE I push the new state (and engine.stop())--race conditions where newly created state's assets load before I can even stop the engine, calling engine.start(), THEN engine.stop()--need to somehow wait to start the engine?
+    * done--in our StateStack.push(), we engine.stop() then state.loadAssets()
+    X so...now condition when popping from stateStack where we introduce a second loop without finishing the first--how to get around that?--HEH, REQUESTANIMATIONFRAME AT BEGINNING OF ENGINE SEQUENCE, THEN CANCEL/REQUEST AS NEEDED
+  X need to keep constant gravity so I fall when in air?--rewrite of animation logic
+    * constantly setting velocityY for constant gravity BUT when trigger collision on top, then triggers left & right, preventing movement--separately handle left/right/top/bottom?--works like a charm, test vertical, then horizontal in an else
+  X remove canvas from world--use context.canvas (for access to dimensions--context for drawing)
+  X next up--gonna need a collision system--seems to be going
+    * let's create a generic world.Object class with collision detection inside
+  X let's add a way to incorporate a SpriteSheet class & make it draw the background
+    * I want to pass in certain params--new SpriteSheet(image, levelMap, blockwidth, context);
+    * but--the image needs to be ready before I can pass it to the SpriteSheet--SpriteSheet must be moved to state.js
+    * but---we need to pass the levelMap in as well--which is in Level1State
+    * so solution--store the levelMap as a property inside the Level1State class, then in State once the image is loaded, create the SpriteSheet object and pass in the image, and add the levelMap through a setter function
+  X now let's extend it so I can add multiple looping frames--great
+  X let's create a basic sprite animation--gnarly, animation class
+  X well let's just make the controller
+    - controller class inside of game? or engine?
+    - need listeners inside of game, so let's instantiate inside game
+  X what's the best way to pass the canvas between modules?--how can I take canvas out of state object renders?--abstraction, main file, update where needed, then render in game.js
+    - so...revisit--let's FINALLY make a game.world object, that includes the canvas, context, player, enemies, etc.
+    - state files--contain render functions needed to render to canvas
+    - ???
+    - I think we're gonna have to take stateful information out of its separate class and into the game class...
+    - let's redo our state machine
+      * canvas (and rendering--loop?) states in game class
+      * we should update inside state? and render inside game?
+      * we should return stateful information into the game! (like game objects)
+  X make an engine file that handles game loop
+  X accessing constructor properties when creating functions in prototype?--just create "public" functions inside constructor to access private data
+  X make state.js able to handle multiple object types (not just Image)--switch statement to handle different objects
+  X figure out how to transition between states but handled by game.js--create updateState() in StateStack that will check if top() has nextState
+  X figure out why I can't call this.object from private function in state.js--create function-scoped var "self" that nested function can access!
+  X figure out why we aren't calling our "callback" in state.js--needed "()"

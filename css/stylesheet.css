@@ -1,0 +1,75 @@
+body {
+  background-color: #fff; /*white rgb(255,255,255)*/
+  color: #bdbdbd;
+  height: 100vh;
+  font-family: Helvetica neue, roboto;
+}
+
+body, body * {
+  margin: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+img {
+  width: 56px;
+  height: 56px;
+}
+
+h1 {
+  font-weight: lighter;
+}
+
+canvas {
+  border: 1px solid lightGray /*#d3d3d3 rgb(211,211,211)*/;
+}
+
+header {
+  background-image: url("../assets/question_block_8bit_sticker.jpg");
+  background-size: 32px;
+  background-repeat: repeat;
+}
+
+header > div {
+  background-color: rgba(255,255,255,0.3);
+}
+
+.content {
+  padding-top: 50px;
+  background-color: rgb(250,250,250);
+}
+
+.background-image {
+  width: 100%;
+  height: 300px;
+  background-image: url("../assets/pixel_8bit_game_background_with_ground_and_vector.jpg");
+}
+
+.flex-container-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.flex-column-middle {
+  justify-content: center;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.full {
+  width: 100%;
+}
+
+
+.full-height {
+  height: 100%;
+}
