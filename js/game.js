@@ -2,7 +2,6 @@
 
 const Game = function() {
 	console.log("Inside \"game.js\".");
-	document.getElementById("main-content").innerHTML += "<br>Inside \"game.js\".";
 
 	//Declare constants and variables
 	const self = this;
@@ -64,6 +63,51 @@ const Game = function() {
 		window.addEventListener("resize", positionSpeaker);
 	}
 
+	//Setup buttons (if on mobile)
+	var setupControllerButtons = function() {
+		self.screenController = {
+			left: document.createElement("button"),
+			up: document.createElement("button"),
+			right: document.createElement("button"),
+			down: document.createElement("button")
+		}
+
+		self.screenController.left.name = "left";
+		self.screenController.up.name = "up";
+		self.screenController.right.name = "right";
+		self.screenController.down.name = "down";
+
+		//Display the volume button
+		for (var button in self.screenController) {
+			self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
+			self.screenController[button].style = "background-color:rgba(255,0,0,0.5);border:none;text-decoration:none;";
+			self.screenController[button].addEventListener("mousedown", function() {
+				console.log("Button "+this.name+" pressed.");
+				self.controller[this.name] = true;
+			});
+			self.screenController[button].addEventListener("mouseup", function() {
+				console.log("Button un-pressed.");
+				self.controller[this.name] = false;
+			});
+		}
+
+		var positionButtons = function() {
+			var speakerPosition = canvas.getBoundingClientRect();
+			rightOffset = 50;
+			bottomOffset = 50;
+			buttonSpacing = 20;
+		  self.screenController.left.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.right-buttonSpacing-rightOffset)+"px;";
+			self.screenController.up.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.right-rightOffset)+"px;";
+			self.screenController.right.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.right+buttonSpacing-rightOffset)+"px;";
+			self.screenController.down.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.right-rightOffset)+"px;";
+		}
+		positionButtons();
+		for (var button in self.screenController) {
+	  	document.body.appendChild(self.screenController[button]);
+		}
+		window.addEventListener("resize", positionButtons);
+	}
+
 	this.update = function() {
 		if (self.world.object.hasOwnProperty("player")) {
 			if (self.controller.left) {
@@ -118,6 +162,10 @@ const Game = function() {
 
 	this.start = function() {
 		setupAudio();
+		//for mobile only, show the on-screen controller
+		if (window.matchMedia("(max-width: 480px)").matches) {
+			setupControllerButtons();
+		}
 		this.engine = new Engine(30, this.update, this.render);
 		this.state = new StateStack(this);
 		this.controller = new Controller();
@@ -132,7 +180,6 @@ const Game = function() {
 	}
 
 	console.log("End of \"game.js\".");
-	document.getElementById("main-content").innerHTML += "<br>End of \"game.js\".";
 };
 
 const game = new Game();

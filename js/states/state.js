@@ -26,16 +26,13 @@ function State(name, objectInfo, update, render, onEnter, onExit, game, callback
 
   this.loadAssets = function() {
     console.log("Inside \"State.loadAssets()\".");
-  	document.getElementById("main-content").innerHTML += "<br>Inside \"State.loadAssets()\".";
     var counter = objectInfo.length;
 
     var onload = function() {
       console.log("Loaded "+this+".");
-    	document.getElementById("main-content").innerHTML += "<br>Loaded "+this+".";
       //Let's catch for if we had NO objects, or just loaded them all
       if (counter == 0 || --counter == 0) {
         console.log("Loaded all "+self.getName()+" objects.");
-      	document.getElementById("main-content").innerHTML += "<br>Loaded all "+self.getName()+" objects.";
         self.start();
       }
     };
