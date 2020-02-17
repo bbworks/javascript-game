@@ -48,6 +48,7 @@ header > div {
   width: 100%;
   height: 300px;
   background-image: url("../assets/pixel_8bit_game_background_with_ground_and_vector.jpg");
+  background-size: 500px;
 }
 
 .flex-container-column {

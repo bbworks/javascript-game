@@ -1,5 +1,18 @@
 SCRATCHPAD
 
+LATEST RELEASE
+###########################################################
+Repository refactoring
+
+ > moved object js files into new js/objects folder
+ > adding resize method
+ > refactoring of game.js
+ > fixed mid-air jump bug
+ > made background image more pleasingly sized
+ > fixed audio (it now works again, AND transitions smoothly between stateful game audio)
+
+###########################################################
+
 ##FILES
   index.html   // contains canvas, loads <script>s
   /js/         // Main JS root.

@@ -15,7 +15,8 @@ function State(name, objectInfo, update, render, onEnter, onExit, game, callback
 
   this.setupObjects = function() {
     game.world.object = this.object;
-    game.audio = this.audio;
+    game.audio.music = this.audio;
+    if (!game.isMuted) {game.audio.music.play();}
   };
 
   this.start = function() {
@@ -65,9 +66,9 @@ function State(name, objectInfo, update, render, onEnter, onExit, game, callback
             self.object[item.name].image.src = item.src;
             break;
           case "audio":
-            self.audio[item.name] = new Audio();
-            self.audio[item.name].addEventListener("canplaythrough", onload);
-            self.audio[item.name].src = item.src;
+            self.audio = new Audio();
+            self.audio.addEventListener("canplaythrough", onload);
+            self.audio.src = item.src;
             break;
           case "player":
             self.object[item.name] = new Player(5, game.context.canvas.height-24-16-1, 20, 24, 2, 0, game.context);

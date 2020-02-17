@@ -1,4 +1,4 @@
-function StateStack(engine) {
+function StateStack(game) {
   var stack = [];
 
   this.top = function() {
@@ -6,14 +6,13 @@ function StateStack(engine) {
     return state;
   };
   this.push = function(state) {
-    engine.stop();
+    game.stop();
     stack.push(state);
     state.onEnter();
     state.loadAssets(); //because we start the engine on asset load, let's save that for LAST
   };
   this.pop = function() {
     var poppedState = this.top();
-    //engine.stop()
     poppedState.onExit();
     stack.pop();
 
