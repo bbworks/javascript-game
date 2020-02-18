@@ -14,6 +14,16 @@ function Controller () {
   this.handleKeyDownUp = function(event) {
     var down = (event.type == "keydown") ? true : false;
 
+    //Assure keys (specifically arrows) don't perform default behavior
+    if (
+      event.keyCode == 37 ||
+      event.keyCode == 38 ||
+      event.keyCode == 39 ||
+      event.keyCode == 40
+    ) {
+      event.preventDefault();
+    }
+
     switch (event.keyCode)
     {
       case 37:

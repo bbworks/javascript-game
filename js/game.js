@@ -69,37 +69,89 @@ const Game = function() {
 			left: document.createElement("button"),
 			up: document.createElement("button"),
 			right: document.createElement("button"),
-			down: document.createElement("button")
+			down: document.createElement("button"),
+			joystick: document.createElement("button")
 		}
 
 		self.screenController.left.name = "left";
 		self.screenController.up.name = "up";
 		self.screenController.right.name = "right";
 		self.screenController.down.name = "down";
+		self.screenController.joystick.name = "joystick";
 
-		//Display the volume button
+		//Set up & display the on-screen d-pad
 		for (var button in self.screenController) {
 			self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
-			self.screenController[button].style = "background-color:rgba(255,0,0,0.5);border:none;text-decoration:none;";
-			self.screenController[button].addEventListener("touchstart", function() {
+			self.screenController[button].style = "background-color:rgba(255,0,0,0.5);border:none;text-decoration:none;width:25px;height:25px;";
+			self.screenController[button].addEventListener("touchstart", function(event) {
+				event.preventDefault();
 				console.log("Button "+this.name+" pressed.");
 				self.controller[this.name] = true;
 			});
-			self.screenController[button].addEventListener("touchend", function() {
-				console.log("Button un-pressed.");
+			self.screenController[button].addEventListener("touchend", function(event) {
+				event.preventDefault();
+				console.log("Button "+this.name+" released.");
 				self.controller[this.name] = false;
 			});
 		}
 
+		//Set up & display the on-screen joystick
+		{
+			var initialX, initialY;
+			var handleJoystickTouch = function(event) {
+				event.preventDefault();
+				if (event.type == "touchstart" || event.type == "touchmove") {
+					var x = event.touches[0].pageX;
+					var y = event.touches[0].pageY;
+				}
+				if (event.type == "touchstart") {
+					initialX = x;
+					initialY = y;
+				}
+				var deltaX = x - initialX;
+				var deltaY = y - initialY;
+				var slope = deltaY/deltaX;
+				if (event.type == "touchstart" || event.type == "touchmove") {
+					//console.log(`${x}, ${y}`);
+					console.log(`${deltaX}, ${deltaY}`);
+					//console.log(`slope: ${slope}`);
+					if (deltaX < -25) {
+						self.controller.left = true;
+						self.controller.right = false;
+					} else if (deltaX > 25) {
+						self.controller.right = true;
+						self.controller.left = false;
+					}
+					else {
+						self.controller.right = false;
+						self.controller.left = false;
+					}
+				} else {
+					for (direction in self.controller) {
+						self.controller[direction] = false;
+					}
+				}
+
+			};
+
+			self.screenController.joystick.setAttribute("class", "fas fa-gamepad");
+			self.screenController.joystick.addEventListener("touchstart", handleJoystickTouch);
+			self.screenController.joystick.addEventListener("touchmove", handleJoystickTouch);
+			self.screenController.joystick.addEventListener("touchend", handleJoystickTouch);
+		}
+
 		var positionButtons = function() {
 			var speakerPosition = canvas.getBoundingClientRect();
-			rightOffset = 50;
-			bottomOffset = 50;
-			buttonSpacing = 20;
-		  self.screenController.left.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.right-buttonSpacing-rightOffset)+"px;";
-			self.screenController.up.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.right-rightOffset)+"px;";
-			self.screenController.right.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.right+buttonSpacing-rightOffset)+"px;";
-			self.screenController.down.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.right-rightOffset)+"px;";
+			var joystickRightOffset = 75;
+			var leftOffset = 50;
+			var rightOffset = 50;
+			var bottomOffset = -25;
+			var buttonSpacing = 20;
+		  self.screenController.joystick.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.right-joystickRightOffset)+"px;";
+			self.screenController.left.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.left-buttonSpacing+rightOffset)+"px;";
+			self.screenController.up.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.left+rightOffset)+"px;";
+			self.screenController.right.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-bottomOffset)+"px;left:"+(speakerPosition.left+buttonSpacing+rightOffset)+"px;";
+			self.screenController.down.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+buttonSpacing-bottomOffset)+"px;left:"+(speakerPosition.left+rightOffset)+"px;";
 		}
 		positionButtons();
 		for (var button in self.screenController) {
@@ -163,7 +215,7 @@ const Game = function() {
 	this.start = function() {
 		setupAudio();
 		//for mobile only, show the on-screen controller
-		if (window.matchMedia("(max-width: 480px)").matches) {
+		if (window.matchMedia("(max-width: 600px)").matches) {
 			setupControllerButtons();
 		}
 		this.engine = new Engine(30, this.update, this.render);
