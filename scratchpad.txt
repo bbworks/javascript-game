@@ -15,6 +15,13 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  _ implement an abastracted AssetManager
+  _ implement more MVC approach--make architecture more modular (Game, Display, Controller, use of public methods inside of main.js to use other components properties)
+  _ change all classes to use function/prototype instead of class/cosntructor
+  X only render tilesheet blocks within the viewport--doneee but within the tilesheet class, which isn't ideal but it works for now
+  _ incorporate a main.js that brings together all pieces
+  X include touch metadata
+  X include on-screen controller in Controller?--treat touch buttons like Controller buttons (e.g. left = true) and attach movements to Controller
   X download audio so its used locally--done
   X fix audio engine--fixed
   X ...make it scroll?

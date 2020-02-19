@@ -57,54 +57,28 @@ function TileSheet (image, blockWidth, game) {
     var x, y;
     for(var i in this.blocks) {
       var block = this.blocks[i];
-      switch (block.type) {
-        case ".":
-          x = 112;
-          y = 48;
-          break;
-        case "_":
-          x = 16;
-          y = 0;
-          break;
-        case "#":
-          x = 112;
-          y = 0;
-          break;
-        case "n":
-          x = 48;
-          y = 0;
-          break;
-      }
-      game.context.drawImage(this.image, x, y, this.blockWidth, this.blockWidth, block.getRenderX(), block.getRenderY(), block.width, block.height);
+      if (game.viewport.isViewable(block)) {
+        switch (block.type) {
+          case ".":
+            x = 112;
+            y = 48;
+            break;
+          case "_":
+            x = 16;
+            y = 0;
+            break;
+          case "#":
+            x = 112;
+            y = 0;
+            break;
+          case "n":
+            x = 48;
+            y = 0;
+            break;
+        }
+        game.context.drawImage(this.image, x, y, this.blockWidth, this.blockWidth, block.getRenderX(), block.getRenderY(), block.width, block.height);
+      } //end if
     } //end for
-
-    /*var x;
-    var y;
-
-    for(var row = 0; row < this.map.length; row++) {
-      for(var column = 0; column < this.map[0].length; column++) {
-        var levelMapBlock = this.map[row][column];
-          switch (levelMapBlock) {
-            case ".":
-              x = 112;
-              y = 48;
-              break;
-            case "_":
-              x = 16;
-              y = 0;
-              break;
-            case "#":
-              x = 112;
-              y = 0;
-              break;
-            case "n":
-              x = 48;
-              y = 0;
-              break;
-          }
-        world.context.drawImage(this.image, x, y, this.blockWidth, this.blockWidth, column*this.blockWidth, row*this.blockWidth, this.blockWidth, this.blockWidth);
-      } //end for(column)
-    } //end for(row)*/
   };
 
   this.scroll = function(x, y) {

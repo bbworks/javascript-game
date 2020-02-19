@@ -78,7 +78,7 @@ function Level1State (game, callback) {
   this.render = function() {
     this.clear();
     for(var each in game.world.object) {
-      if (each != "player") {
+      if (each != "player" /*&& game.viewport.isViewable(game.world.object[each])*/) {
         game.world.object[each].render();
       }
     };
