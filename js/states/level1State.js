@@ -1,26 +1,23 @@
 function Level1State (game, callback) {
+  State.call(this, game, callback);
+
   //Declare private constants and variables
-  const stateName = "level1";
-  const groundDepth = 35;
-  const roadDepth = groundDepth/2;
-  const treeDepth = groundDepth/3;
-  const treeSeparation = 25;
-  const cloudDepth = 15;
-  const cloudSeparation = 25;
-  const gameObjectsInfo = [
-    //{name:"sky",type:"rectangle",style:"#18c9ff",x1:0,y1:0,x2:world.canvas.width,y2:world.canvas.height},
-    //{name:"ground",type:"rectangle",style:"#209b45",x1:0,y1:world.canvas.height-groundDepth,x2:world.canvas.width,y2:world.canvas.height},
-    //{name:"road",type:"rectangle",style:"#dacf33",x1:0,y1:world.canvas.height-roadDepth,x2:world.canvas.width,y2:world.canvas.height},
+  this.name = "level1";
+  this.assets = [
     {name:"tilesheet",type:"tilesheet",src:"assets/rabbit-trap.png"}, //https://raw.githubusercontent.com/pothonprogramming/pothonprogramming.github.io/master/content/rabbit-trap/rabbit-trap.png
-    //{name:"enemy",type:"image",src:"https://art.pixilart.com/4905597645165ef.png"}, //"https://vectorskey.com/wp-content/uploads/2019/02/vector-illustration-car-automobile-clip-art-copy.png"
     {name:"player",type:"player",src:"assets/rabbit-trap.png"},
-    //{name:"tree",type:"image",src:"https://external-preview.redd.it/F_If_-XcfBi0DkStwGndtl9yCrRFGN1APiTXoEtzDG4.png?auto=webp&s=b444f2782399ba6e4d3457b041cd6c78eba4feda"},
-    //{name:"cloud",type:"image",src:"https://www.trzcacak.rs/myfile/full/39-395837_8-bit-clouds-png-circle.png"},
+    {name:"enemy1",type:"enemy",src:"assets/rabbit-trap.png"},
+    //{name:"coin",type:"coin",src:"assets/animated-png-photoshop-2.png"},
     {name:"level1Audio",type:"audio",src:"assets/sawsquarenoise_-_10_-_Towel_Defence_Ending.mp3"}
   ];
-  const self = this;
 
   this.levelMap =
+  "............................................."+"\r\n"+
+  "............................................."+"\r\n"+
+  "............................................."+"\r\n"+
+  "............................................."+"\r\n"+
+  "............................................."+"\r\n"+
+  "............................................."+"\r\n"+
   "............................................."+"\r\n"+
   "............................................."+"\r\n"+
   "............................................."+"\r\n"+
@@ -36,75 +33,83 @@ function Level1State (game, callback) {
   ".................n...............######......"+"\r\n"+
   "________..___________________________________";
 
-  //Create functions that need to access private data as public functions
-  this.clear = function() {
-    game.context.clearRect(0,0,game.context.canvas.width,game.context.canvas.height)
-  };
+} //end constructor
 
-  this.update = function() {
-    for(var each in game.world.object) {
-      //Update all objects
-      game.world.object[each].update();
+Level1State.prototype = Object.create(State.prototype);
 
-      //Now, let's update our viewport--scrolling the viewport as necessary
-      //If we're hitting the left 200, stay left
-      if (game.world.object.player.x < 200) {
-        game.viewport.x = 0;
-      }
-      //If we're hitting the right 200, stay right
-      else if (game.world.object.player.x > game.world.object.tilesheet.width-200) {
-        game.viewport.x = game.world.object.tilesheet.width - game.viewport.width;
-      }
-      //Otherwise, scroll as necessary
-      else {
-        game.viewport.x = game.world.object.player.x - 200;
-      }
+Level1State.prototype.constructor = Level1State;
 
-      //If we go up too high, let's scroll up, otherwise stay at our base
-      if (game.world.object.player.y <= 130) {
-        game.viewport.y = game.world.object.player.y - 130;
-      }
-      else {
-        game.viewport.y = game.viewport.baseY;
-      }
+Level1State.prototype.clear = function() {
+  game.context.clearRect(0,0,game.context.canvas.width,game.context.canvas.height)
+};
 
-      //Now, let's scroll all our objects as necessary
-      game.world.object[each].scroll(game.viewport.x, game.viewport.y);
+Level1State.prototype.update = function() {
+  for(var each in game.world.object) {
+    //Update all objects
+    game.world.object[each].update();
+
+    //Now, test collision BEFORE we scroll
+    // (to avoid choppy movements from
+    // collision system updating values)
+    game.world.testCollision(game.world.object.player);
+    game.world.testCollision(game.world.object.enemy1);
+
+    //Now, let's update our viewport--scrolling the viewport as necessary
+    //If we're hitting the left 200, stay left
+    if (game.world.object.player.x < 200) {
+      game.viewport.x = 0;
+    }
+    //If we're hitting the right 200, stay right
+    else if (game.world.object.player.x > game.world.object.tilesheet.width-200) {
+      game.viewport.x = game.world.object.tilesheet.width - game.viewport.width;
+    }
+    //Otherwise, scroll as necessary
+    else {
+      game.viewport.x = game.world.object.player.x - 200;
     }
 
-    game.world.testCollision(game.world.object.player);
-  };
+    //If we go up too high, let's scroll up, otherwise stay at our base
+    if (game.world.object.player.y <= game.world.object.tilesheet.height-Math.floor(game.viewport.height/2-game.world.object.player.height/2)) {
+      game.viewport.y = game.world.object.player.y - (game.viewport.height-Math.floor(game.viewport.height/2-game.world.object.player.height/2));
+    }
+    else {
+      game.viewport.y = game.viewport.baseY;
+    }
 
-  this.render = function() {
-    this.clear();
-    for(var each in game.world.object) {
-      if (each != "player" /*&& game.viewport.isViewable(game.world.object[each])*/) {
-        game.world.object[each].render();
-      }
-    };
-    game.world.object.player.render();
-  };
+    //Now, let's scroll all our objects as necessary
+    game.world.object[each].scroll(game.viewport.x, game.viewport.y);
+  }
+};
 
-  this.onKeyDown = function(event) {
+Level1State.prototype.render = function() {
+  this.clear();
+  for(var each in game.world.object) {
+    if (each != "player" && each != "enemy1" /*&& game.viewport.isViewable(game.world.object[each])*/) {
+      game.world.object[each].render();
+    }
+  };
+  game.world.object.player.render();
+  game.world.object.enemy1.render();
+};
+
+Level1State.prototype.onEnter = function() {
+  console.log("Inside \"Level1State.onEnter()\".");
+  //Create the state-specific handlers
+  document.addEventListener("keydown", function(event) {
     if (event.keyCode == 80) {
       self.onExit();
       self.nextState = new PauseMenuState(game, callback);
     }
-  }
+  });
+};
 
-  this.onEnter = function() {
-    console.log("Inside \"Level1State.onEnter()\".");
-    //Create the state-specific handlers
-    document.addEventListener("keydown", this.onKeyDown);
-  }
-
-  State.call(this, stateName, gameObjectsInfo, this.update, this.render, this.onEnter, this.onExit, game, callback);
-} //end constructor
-
-Level1State.prototype = State.prototype;
-
-Level1State.prototype = {
-  constructor: Level1State,
-  //onEnter: function() {},
-  onExit: function() {},
-}
+Level1State.prototype.onExit = function() {
+  console.log("Inside \"Level1State.onExit()\".");
+  //Create the state-specific handlers
+  document.removeEventListener("keydown", function(event) {
+    if (event.keyCode == 80) {
+      self.onExit();
+      self.nextState = new PauseMenuState(game, callback);
+    }
+  });
+};

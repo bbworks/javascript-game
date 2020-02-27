@@ -1,9 +1,9 @@
-function TileSheet (image, blockWidth, game) {
+function TileSheet (blockWidth, game) {
   //Declare private constants and variables
 
 
   //Declare public variables
-  this.image = image;
+  this.image = new Image();
   this.levelMap;
   this.blockWidth = blockWidth;
   this.map;
@@ -44,7 +44,7 @@ function TileSheet (image, blockWidth, game) {
     } //end for(row)
 
     if (this.height > game.viewport.height) {
-      game.viewport.baseY = levelHeight-game.viewport.height;
+      game.viewport.baseY = this.height-game.viewport.height;
     }
     else {
       game.viewport.baseY = 0;
@@ -76,7 +76,7 @@ function TileSheet (image, blockWidth, game) {
             y = 0;
             break;
         }
-        game.context.drawImage(this.image, x, y, this.blockWidth, this.blockWidth, block.getRenderX(), block.getRenderY(), block.width, block.height);
+        game.context.drawImage(this.image, x, y, this.blockWidth, this.blockWidth, block.getViewportX(), block.getViewportY(), block.width, block.height);
       } //end if
     } //end for
   };

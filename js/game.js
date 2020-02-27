@@ -114,9 +114,10 @@ const Game = function() {
 			if (self.world.object.hasOwnProperty("tilesheet") && self.world.object.tilesheet.hasOwnProperty("blocks")) {
 				var blocksArray = self.world.object.tilesheet.blocks;
 				for(var i = 0; i < blocksArray.length; i++) {
-					if (blocksArray[i].isCollidable && blocksArray[i].isColliding(object)) {
+					var block = blocksArray[i];
+					if (block.isCollidable && block.isColliding(object)) {
 					 /*DEBUG*/ //console.log(true);
-					 object.collide(blocksArray[i]);
+					 object.collide(block);
 				 }
 				}
 			}
@@ -127,6 +128,7 @@ const Game = function() {
 		this.engine = new Engine(30, this.update, this.render);
 		this.state = new StateStack(this);
 		this.controller = new Controller(this.context.canvas);
+		this.assetManager = new AssetManager(this);
 		setupAudio();
 		//for mobile only, show the on-screen controller
 		if (window.matchMedia("(max-width: 600px)").matches) {

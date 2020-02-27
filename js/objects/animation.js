@@ -1,9 +1,9 @@
-function Animation (image, frames, columns, rows, width, height) {
+function Animation (image, frames, context) {
   //Declare public properties
   this.frames = frames;
 
   //Declare private constants and variables
-  var frame = this.frames.right; //Set a default frame
+  var frame;
   var animationDuration = 10;
   var count = 0;
   var frameIndex = 0;

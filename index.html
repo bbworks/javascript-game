@@ -11,7 +11,7 @@
 		<meta name="description" content="A simple 2-d platformer.">
     <title>2-D World</title>
     <link type="text/css" rel="stylesheet" href="css/stylesheet.css">
-		<link type="image/ico" rel="icon" href="https://ctl.s6img.com/society6/img/jwE1eOKuenQr8uj4rlRFnlLfvR0/w_700/prints/~artwork/s6-0070/a/28718738_11658467/~~/8-bit-block-ground-prints.jpg">
+		<link type="image/ico" rel="icon" href="assets/8-bit-block-ground-prints.jpg">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
   </head>
   <body class="flex-container-column">
@@ -25,19 +25,23 @@
       <section class="content flex-column-middle full-height">
         <h1>8Bit-venture</h1>
         <canvas id="canvas">Your browser does not support the HTML5 canvas tag.</canvas>
+        <div id="onScreenController-div"></div>
         <div id="main-content"></div>
       </section>
     </main>
-    <script src="js/objects/gameobject.js"></script>
+    <script src="js/objects/gameObject.js"></script>
+    <script src="js/objects/movingObject.js"></script>
     <script src="js/objects/block.js"></script>
     <script src="js/objects/tilesheet.js"></script>
     <script src="js/objects/animation.js"></script>
     <script src="js/objects/player.js"></script>
+    <script src="js/objects/enemy.js"></script>
     <script src="js/states/state.js"></script>
     <script src="js/states/stateStack.js"></script>
     <script src="js/states/mainMenuState.js"></script>
     <script src="js/states/level1State.js"></script>
     <script src="js/states/pauseMenuState.js"></script>
+    <script src="js/assetManager.js"></script>
     <script src="js/controller.js"></script>
     <script src="js/engine.js"></script>
     <script src="js/game.js"></script>

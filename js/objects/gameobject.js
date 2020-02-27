@@ -1,11 +1,13 @@
 function GameObject (x, y, width, height) {
   //Declare public properties
+  this.image = new Image();
   this.x = x;
   this.y = y;
   this.width = width;
   this.height = height;
-  this.renderX = 0;
-  this.renderY = 0;
+  this.viewportOffsetX = 0;
+  this.viewportOffsetY = 0;
+  this.animation;
 
   //Declare private constants and variables
 
@@ -28,15 +30,28 @@ GameObject.prototype = {
     )
   },
   scroll: function(x, y) {
-    this.renderX = x;
-    this.renderY = y;
+    this.viewportOffsetX = x;
+    this.viewportOffsetY = y;
   },
-
-  getRenderX: function() {
-    return this.x - this.renderX;
+  getViewportX: function() {
+    return this.x - this.viewportOffsetX;
   },
-
-  getRenderY: function() {
-    return this.y - this.renderY;
+  getViewportY: function() {
+    return this.y - this.viewportOffsetY;
+  },
+  update: function() {
+    //Now update the animation if we have one
+    if (this.animation) {
+      this.animation.update(this.velocityX, this.velocityY);
+    }
+  },
+  render: function() {
+    //Now, draw the animation, or the still image
+    if (this.animation) {
+      this.animation.render(game.context, this.getViewportX(), this.getViewportY(), this.width, this.height);
+    }
+    else {
+      game.context.drawImage(this.image, this.getViewportX(), this.getViewportY(), this.width, this.height);
+    }
   },
 }

@@ -146,7 +146,7 @@ function Controller (canvas) {
 
   this.setupOnScreenController = function () {
     for (var button in self.screenController) {
-      self.screenController[button].style = "width:40px;height:40px;background-color:rgb(255,0,0);border:none;text-decoration:none;border-radius:50%;";
+      self.screenController[button].style = "width:40px;height:40px;font-size:20px;background-color:rgb(255,0,0);border:none;text-decoration:none;border-radius:50%;";
       document.body.appendChild(self.screenController[button]);
   	}
     setupScreenControllerDPad();

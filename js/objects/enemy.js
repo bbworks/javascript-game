@@ -1,6 +1,9 @@
-function Player (x, y, width, height, speed, game) {
+function Enemy (x, y, width, height, speed, game) {
   this.jumpHeight = 10;
   this.gravity = 1;
+
+  var counterFrames = 25;
+  var counter = counterFrames;
 
   MovingObject.call(this, x, y, width, height, speed, this.jumpHeight, this.gravity, game)
 
@@ -13,7 +16,21 @@ function Player (x, y, width, height, speed, game) {
     rightUp: {x: 65, y: 112, width: 13, height: 16}
   };
   this.animation = new Animation(this.image, frames, game.context);
+
+  this.update = function() {
+    if (this.velocityX == 0) {
+      this.velocityX = this.speed;
+    }
+    if (counter == counterFrames) {
+      counter = 0;
+      this.velocityX *= -1;
+    }
+    else {
+      counter++;
+    }
+    MovingObject.prototype.update.call(this);
+  }
 }
 
-Player.prototype = MovingObject.prototype;
-Player.prototype.constructor = Player;
+Enemy.prototype = MovingObject.prototype;
+Enemy.prototype.constructor = Enemy;

@@ -15,6 +15,10 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  _ write text function?
+  _ change game object hierarchy to include NPC?
+    * starting by having GameObject > MovingObject > Player/Enemy--works
+    * issues with MovingObject.prototype.update/render overridding GameObject.prototype.update/render--dummy you're pointing to the same object "MovingObject.prototype = GameObject.prototype"...use Object.create() instead
   _ implement an abastracted AssetManager
   _ implement more MVC approach--make architecture more modular (Game, Display, Controller, use of public methods inside of main.js to use other components properties)
   _ change all classes to use function/prototype instead of class/cosntructor
