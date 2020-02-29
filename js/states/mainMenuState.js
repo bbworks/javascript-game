@@ -11,9 +11,16 @@ function MainMenuState (game, callback) {
   this.callback = callback;
   this.title = "8Bit-venture";
   this.subtitle = "Click to begin";
+  var self = this;
 
   //Create functions that need to access private data as public functions
-
+  this.onClick = function(event) {
+    //Change game audio
+    //currentAudio.pause();
+    //currentAudio = new Sound(gameplayAudioUrl);
+    self.onExit();
+    self.nextState = new Level1State(game, self.callback);
+  };
 } //end constructor
 
 MainMenuState.prototype = Object.create(State.prototype);
@@ -39,22 +46,14 @@ MainMenuState.prototype.render = function() {
   game.context.fillText(this.subtitle,(game.context.canvas.width-fontMeasurement.width)/2,153);
 };
 
-MainMenuState.prototype.onClick = function(event) {
-  //Change game audio
-  //currentAudio.pause();
-  //currentAudio = new Sound(gameplayAudioUrl);
-  this.onExit();
-  this.nextState = new Level1State(game, this.callback);
-};
-
 MainMenuState.prototype.onEnter = function() {
   console.log("Inside \"MainMenuState.onEnter()\".");
   //Create the state-specific handlers
-  game.context.canvas.addEventListener("click", this.onClick.bind(this));
+  game.context.canvas.addEventListener("click", this.onClick);
 };
 
 MainMenuState.prototype.onExit = function() {
   console.log("Inside \"MainMenuState.onExit()\".");
   //Clear the state-specific handlers
-  game.context.canvas.removeEventListener("click", this.onClick.bind(this));
+  game.context.canvas.removeEventListener("click", this.onClick);
 };

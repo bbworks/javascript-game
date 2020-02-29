@@ -28,8 +28,7 @@ function Animation (image, frames, context) {
       //If we're moving horizontally AT ALL, do our walking animation
       if (movementX != 0) {
         direction = (movementX < 0) ? "left" : "right";
-        if (count > animationDuration) {
-          count = count - animationDuration;
+        if (count % animationDuration == 0) {
           frameIndex = (frameIndex + 1) % this.frames[direction].length;
         }
         frame = this.frames[direction][frameIndex];

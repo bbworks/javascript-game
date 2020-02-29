@@ -15,8 +15,26 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  _ clean up global namespace--check for any variables that weren't scoped
+  X fix issue where we can still click and activate MainMenuState.onClick() on level1State
+  X fix weird blipping around edge of viewport when scrolling
+    * comes from scrolling being last...we only render images that are viewable
+    * but...after all objects, we update the viewport, then scroll all objects
+    * need to update player, update viewport
+    * level1State.render() knows the block is not within the viewport BEFORE the x position is updated
+      o so, level1State.update()--nothing
+      o viewport updates--moves viewport based on player
+      o we should update the object's viewportOffsetX--but we don't?
+      o AHHH--we update the tilesheet and scroll it, THEN WE UPDATE THE PLAYER, WHICH UPDATES THE VIEWPORT, WHICH CHANGES THE SCROLLING--we need to update player FIRST since the viewport (and therefore all other objects) are dependent on its position
+      o really helpful debug statement I used to start a debugger at a specific point in my game from my actions
+        //console.log("begin update()");
+        if (game.viewport.x == 161 && game.world.object.player.velocityX == -2) {
+          console.log("debug");
+        }
+  X implement actual FPS-throttling Engine
+    * done--tracking engine and game FPS separately now
   _ write text function?
-  _ change game object hierarchy to include NPC?
+  X change game object hierarchy to include NPC?
     * starting by having GameObject > MovingObject > Player/Enemy--works
     * issues with MovingObject.prototype.update/render overridding GameObject.prototype.update/render--dummy you're pointing to the same object "MovingObject.prototype = GameObject.prototype"...use Object.create() instead
   _ implement an abastracted AssetManager

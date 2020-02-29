@@ -44,16 +44,7 @@ Level1State.prototype.clear = function() {
 };
 
 Level1State.prototype.update = function() {
-  for(var each in game.world.object) {
-    //Update all objects
-    game.world.object[each].update();
-
-    //Now, test collision BEFORE we scroll
-    // (to avoid choppy movements from
-    // collision system updating values)
-    game.world.testCollision(game.world.object.player);
-    game.world.testCollision(game.world.object.enemy1);
-
+  var updateViewport = function() {
     //Now, let's update our viewport--scrolling the viewport as necessary
     //If we're hitting the left 200, stay left
     if (game.world.object.player.x < 200) {
@@ -75,8 +66,29 @@ Level1State.prototype.update = function() {
     else {
       game.viewport.y = game.viewport.baseY;
     }
+  };
 
-    //Now, let's scroll all our objects as necessary
+  //Because the viewport position
+  // (and therefore, every other object's render position)
+  // are dependent on the player's position,
+  // let's update player FIRST (and other objects)
+  for(var each in game.world.object) {
+    game.world.object[each].update();
+  }
+
+  //Now, test collision BEFORE we scroll
+  // (to avoid choppy movements from
+  // collision system updating values)
+  game.world.testCollision(game.world.object.player);
+  game.world.testCollision(game.world.object.enemy1);
+
+  //Now, let's update the viewport position,
+  // since we now know our definite player position
+  // (post-collisions)
+  updateViewport();
+
+  //Now, let's scroll all our objects as necessary
+  for(var each in game.world.object) {
     game.world.object[each].scroll(game.viewport.x, game.viewport.y);
   }
 };
