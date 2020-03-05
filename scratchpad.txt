@@ -15,7 +15,27 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
-  _ clean up global namespace--check for any variables that weren't scoped
+  X produce visible error if something fails?--done--window.onerror that calls window.alert
+  x implement splash/loading screen--simple loading bar but it does the trick for now
+  x add moving platform
+  X implement separate class/file for viewport--very easy, done
+  X change the way player interacts with blocks vs coins--implement collision system
+    * okay, so we need to buff our collision system
+    * separete CollisionSystem?--two parts:
+      o collision detection
+      o collision response
+    * buff game.world.collision?
+      o isColliding()--tests to see if two objects are actually colliding
+      o detectCollision()--wrapper function that test collision on all objects (enemies, blocks, coins)--move blocks/coins into game.world.object?
+      o respondCollision()--handle collision response
+        - harmed
+        ^ picked up
+        ^ stopped
+        ^ unphased/unmoved--well..no collision
+    * two collisions--motion collision (blocked movement) and non-motion (powerups, coins, enemies that don't stop movement)?
+
+  X implement easy getTop/Left/Bottom/Right functions in GameObject/MovingObject class--done
+  X clean up global namespace--check for any variables that weren't scoped--I think I'm already good
   X fix issue where we can still click and activate MainMenuState.onClick() on level1State
   X fix weird blipping around edge of viewport when scrolling
     * comes from scrolling being last...we only render images that are viewable

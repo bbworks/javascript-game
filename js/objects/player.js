@@ -12,8 +12,8 @@ function Player (x, y, width, height, speed, game) {
     right: [{x: 13, y: 112, width: 13, height: 16},{x: 26, y: 112, width: 13, height: 16},{x: 39, y: 112, width: 13, height: 16},{x: 52, y: 112, width: 13, height: 16}],
     rightUp: {x: 65, y: 112, width: 13, height: 16}
   };
-  this.animation = new Animation(this.image, frames, game.context);
+  this.animation = new Animation(this.image, frames, 10, false, game.context);
 }
 
-Player.prototype = MovingObject.prototype;
+Player.prototype = Object.create(MovingObject.prototype);
 Player.prototype.constructor = Player;

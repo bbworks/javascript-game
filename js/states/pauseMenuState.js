@@ -1,14 +1,14 @@
 function PauseMenuState (game, callback) {
-  //Declare private constants and variables
-  const stateName = "pauseMenu";
-  const text = "PAUSE";
-  var drawn = false;
+  State.call(this, game, callback);
+
+  this.name = "pauseMenu";
+  this.text = "PAUSE";
+  this.drawn = false;
   const self = this;
-  const gameObjectsInfo = [];
 
   //Create functions that need to access private data as public functions
   this.render = function() {
-    if (!drawn) {
+    if (!this.drawn) {
       //Draw the start screen background
       game.context.fillStyle = "white";
       game.context.globalAlpha = 0.5;
@@ -18,9 +18,9 @@ function PauseMenuState (game, callback) {
       //Draw the title
       game.context.fillStyle = "orange";
       game.context.font = '48px monospace';
-      var fontMeasurement = game.context.measureText(text);
-      game.context.fillText(text,(game.context.canvas.width-fontMeasurement.width)/2,130);
-      drawn = true;
+      var fontMeasurement = game.context.measureText(this.text);
+      game.context.fillText(this.text,(game.context.canvas.width-fontMeasurement.width)/2,130);
+      this.drawn = true;
     }
   };
 
@@ -41,15 +41,8 @@ function PauseMenuState (game, callback) {
     //Create the state-specific handlers
     document.removeEventListener("keydown", this.onKeyDown);
   }
-
-  State.call(this, stateName, gameObjectsInfo, this.update, this.render, this.onEnter, this.onExit, game, callback);
 } //end constructor
 
-PauseMenuState.prototype = State.prototype;
+PauseMenuState.prototype = Object.create(State.prototype);
 
-PauseMenuState.prototype = {
-  constructor: PauseMenuState,
-  update: function() {},
-  onEnter: function() {},
-  onExit: function() {},
-}
+PauseMenuState.prototype.constructor = PauseMenuState;

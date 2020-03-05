@@ -31,6 +31,7 @@ function Controller (canvas) {
   this.screenController.joystick.name = "joystick";
 
   //Declare private variables
+  var joystickMovement = 25;
   const self = this;
 
   //Create functions that need to access private data as public functions
@@ -83,10 +84,10 @@ function Controller (canvas) {
       //console.log(`${x}, ${y}`);
       //console.log(`${deltaX}, ${deltaY}`);
       //console.log(`slope: ${slope}`);
-      if (deltaX < -15) {
+      if (deltaX < -joystickMovement) {
         self.key.left = true;
         self.key.right = false;
-      } else if (deltaX > 15) {
+      } else if (deltaX > joystickMovement) {
         self.key.left = false;
         self.key.right = true;
       }
@@ -95,10 +96,10 @@ function Controller (canvas) {
         self.key.left = false;
       }
 
-      if (deltaY < -25) {
+      if (deltaY < -joystickMovement) {
         self.key.up = true;
         self.key.down = false;
-      } else if (deltaY > 25) {
+      } else if (deltaY > joystickMovement) {
         self.key.up = false;
         self.key.down = true;
       }

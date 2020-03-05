@@ -6,10 +6,12 @@ function Level1State (game, callback) {
   this.assets = [
     {name:"tilesheet",type:"tilesheet",src:"assets/rabbit-trap.png"}, //https://raw.githubusercontent.com/pothonprogramming/pothonprogramming.github.io/master/content/rabbit-trap/rabbit-trap.png
     {name:"player",type:"player",src:"assets/rabbit-trap.png"},
-    {name:"enemy1",type:"enemy",src:"assets/rabbit-trap.png"},
-    //{name:"coin",type:"coin",src:"assets/animated-png-photoshop-2.png"},
+    {name:"enemy1",type:"enemy",src:"assets/NES_-_Super_Mario_Bros_-_Enemies_&_Bosses.png"},
+    {name:"coin",type:null,src:"assets/animated-png-photoshop-2.png"},
+    {name:"platform",type:null,src:"assets/NES_-_Super_Mario_Bros_-_Items_Objects_and_NPCs.png"},
     {name:"level1Audio",type:"audio",src:"assets/sawsquarenoise_-_10_-_Towel_Defence_Ending.mp3"}
   ];
+  const self = this;
 
   this.levelMap =
   "............................................."+"\r\n"+
@@ -23,16 +25,37 @@ function Level1State (game, callback) {
   "............................................."+"\r\n"+
   "............................................."+"\r\n"+
   "............................................."+"\r\n"+
-  "............................................."+"\r\n"+
-  "............................................."+"\r\n"+
-  "........................#.............#......"+"\r\n"+
-  ".....................................##......"+"\r\n"+
-  "......................#.............###......"+"\r\n"+
-  "....................#..............####......"+"\r\n"+
-  "..................................#####......"+"\r\n"+
-  ".................n...............######......"+"\r\n"+
+  "..........................0..............0..."+"\r\n"+
+  ".........................0.0................."+"\r\n"+
+  "........................#...0.........#......"+"\r\n"+
+  "............................0........##..v..."+"\r\n"+
+  "......................#.....0.......###......"+"\r\n"+
+  "....................#.......0......####......"+"\r\n"+
+  "............................0.....#####....v."+"\r\n"+
+  "..............0..n..........0....######......"+"\r\n"+
   "________..___________________________________";
 
+  this.onEnter = function() {
+    console.log("Inside \"Level1State.onEnter()\".");
+    //Create the state-specific handlers
+    document.addEventListener("keydown", function(event) {
+      if (event.keyCode == 80) {
+        self.onExit();
+        self.nextState = new PauseMenuState(game, callback);
+      }
+    });
+  };
+
+  this.onExit = function() {
+    console.log("Inside \"Level1State.onExit()\".");
+    //Create the state-specific handlers
+    document.removeEventListener("keydown", function(event) {
+      if (event.keyCode == 80) {
+        self.onExit();
+        self.nextState = new PauseMenuState(game, callback);
+      }
+    });
+  };
 } //end constructor
 
 Level1State.prototype = Object.create(State.prototype);
@@ -44,30 +67,6 @@ Level1State.prototype.clear = function() {
 };
 
 Level1State.prototype.update = function() {
-  var updateViewport = function() {
-    //Now, let's update our viewport--scrolling the viewport as necessary
-    //If we're hitting the left 200, stay left
-    if (game.world.object.player.x < 200) {
-      game.viewport.x = 0;
-    }
-    //If we're hitting the right 200, stay right
-    else if (game.world.object.player.x > game.world.object.tilesheet.width-200) {
-      game.viewport.x = game.world.object.tilesheet.width - game.viewport.width;
-    }
-    //Otherwise, scroll as necessary
-    else {
-      game.viewport.x = game.world.object.player.x - 200;
-    }
-
-    //If we go up too high, let's scroll up, otherwise stay at our base
-    if (game.world.object.player.y <= game.world.object.tilesheet.height-Math.floor(game.viewport.height/2-game.world.object.player.height/2)) {
-      game.viewport.y = game.world.object.player.y - (game.viewport.height-Math.floor(game.viewport.height/2-game.world.object.player.height/2));
-    }
-    else {
-      game.viewport.y = game.viewport.baseY;
-    }
-  };
-
   //Because the viewport position
   // (and therefore, every other object's render position)
   // are dependent on the player's position,
@@ -79,13 +78,13 @@ Level1State.prototype.update = function() {
   //Now, test collision BEFORE we scroll
   // (to avoid choppy movements from
   // collision system updating values)
-  game.world.testCollision(game.world.object.player);
-  game.world.testCollision(game.world.object.enemy1);
+  game.collisionSystem.detectCollision(game.world.object.player);
+  game.collisionSystem.detectCollision(game.world.object.enemy1);
 
   //Now, let's update the viewport position,
   // since we now know our definite player position
   // (post-collisions)
-  updateViewport();
+  game.viewport.update();
 
   //Now, let's scroll all our objects as necessary
   for(var each in game.world.object) {
@@ -102,26 +101,4 @@ Level1State.prototype.render = function() {
   };
   game.world.object.player.render();
   game.world.object.enemy1.render();
-};
-
-Level1State.prototype.onEnter = function() {
-  console.log("Inside \"Level1State.onEnter()\".");
-  //Create the state-specific handlers
-  document.addEventListener("keydown", function(event) {
-    if (event.keyCode == 80) {
-      self.onExit();
-      self.nextState = new PauseMenuState(game, callback);
-    }
-  });
-};
-
-Level1State.prototype.onExit = function() {
-  console.log("Inside \"Level1State.onExit()\".");
-  //Create the state-specific handlers
-  document.removeEventListener("keydown", function(event) {
-    if (event.keyCode == 80) {
-      self.onExit();
-      self.nextState = new PauseMenuState(game, callback);
-    }
-  });
 };

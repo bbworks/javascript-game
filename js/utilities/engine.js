@@ -28,7 +28,7 @@ function Engine (fps, update, render) {
 
 	//Create the FPS div module
   fpsDiv = document.createElement("div");
-	fpsDiv.innerHTML = "0";
+	fpsDiv.innerHTML = `Engine FPS: ${null} Game FPS: ${null}`;
   document.body.appendChild(fpsDiv);
 
 	var handleThrottle = function() {
@@ -93,12 +93,13 @@ function Engine (fps, update, render) {
 		}
 		if (animationFrame % 50 == 0) {
 			updateFps();
-			var name = "engine"
 		}
 
 		while (handleGameUpdate()) {
 			buffer -= 1000/self.throttleFps;
-			update();
+			if (isRunning) {
+				update();
+			}
 			isUpdated = true;
 		}
 

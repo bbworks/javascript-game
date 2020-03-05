@@ -18,7 +18,7 @@ function StateStack(game) {
 
     state = this.top();
     state.nextState = null;
-    state.setupObjects();
+    state.setupObjects(false);
     return poppedState;
   };
   this.update = function() {

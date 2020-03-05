@@ -6,7 +6,7 @@ function MainMenuState (game, callback) {
   this.name = "mainMenu";
   this.assets = [
     {name:"startScreenImage",type:"image",src:"assets/pixel-art-seamless-background-location-260nw-721777879.jpg"},
-    {name:"startScreenAudio",type:"audio",src:"assets/Rolemusic_-_Omou_matsu.mp3"}
+    {name:"startScreenAudio",type:"audio",src:"assets/Rolemusic_-_Omou_matsu.mp3"},
   ];
   this.callback = callback;
   this.title = "8Bit-venture";

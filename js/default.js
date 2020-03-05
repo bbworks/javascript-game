@@ -1,4 +1,6 @@
 function Default () {
+  ParentClass.call();
+
   //Declare public properties
 
 
@@ -10,6 +12,6 @@ function Default () {
 
 } //end constructor
 
-Default.prototype.constructor = {
-  constructor: Default
-}
+Default.prototype = Object.create(ParentClass.prototype);
+
+Default.prototype.constructor = Default;

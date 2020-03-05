@@ -5,6 +5,8 @@ function GameObject (x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
+  this.velocityX = 0;
+  this.velocityY = 0;
   this.viewportOffsetX = 0;
   this.viewportOffsetY = 0;
   this.animation;
@@ -19,25 +21,39 @@ function GameObject (x, y, width, height) {
 
 GameObject.prototype = {
   constructor: GameObject,
-  isColliding: function(object) {
-    //console.log(this.x, this.y, this.width, this.height);
-    //console.log(object.x, object.y, object.width, object.height);
-    return (
-      (this.y < object.y + object.height) && //mytop < bottom
-      (this.y + this.height > object.y) && //mybottom > top
-      (this.x < object.x + object.width) && //myleft < right
-      (this.x + this.width >  object.x) //myright > left
-    )
-  },
-  scroll: function(x, y) {
-    this.viewportOffsetX = x;
-    this.viewportOffsetY = y;
-  },
   getViewportX: function() {
     return this.x - this.viewportOffsetX;
   },
   getViewportY: function() {
     return this.y - this.viewportOffsetY;
+  },
+  getTop: function() {
+    return this.y;
+  },
+  getLeft: function() {
+    return this.x;
+  },
+  getBottom: function() {
+    return this.y + this.height;
+  },
+  getRight: function() {
+    return this.x + this.width;
+  },
+  getViewportTop: function() {
+    return this.getViewportY();
+  },
+  getViewportLeft: function() {
+    return this.getViewportX();
+  },
+  getViewportBottom: function() {
+    return this.getViewportY() + this.height;
+  },
+  getViewportRight: function() {
+    return this.getViewportX() + this.width;
+  },
+  scroll: function(x, y) {
+    this.viewportOffsetX = x;
+    this.viewportOffsetY = y;
   },
   update: function() {
     //Now update the animation if we have one
@@ -49,6 +65,9 @@ GameObject.prototype = {
     //Now, draw the animation, or the still image
     if (this.animation) {
       this.animation.render(game.context, this.getViewportX(), this.getViewportY(), this.width, this.height);
+    }
+    else if (this.sourceX && this.sourceY && this.sourceWidth && this.sourceHeight) {
+      game.context.drawImage(this.image, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight, this.getViewportX(), this.getViewportY(), this.width, this.height);
     }
     else {
       game.context.drawImage(this.image, this.getViewportX(), this.getViewportY(), this.width, this.height);

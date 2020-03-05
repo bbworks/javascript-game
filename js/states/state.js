@@ -18,7 +18,7 @@ State.prototype.onEnter = function() {};
 State.prototype.onExit = function() {};
 
 State.prototype.start = function() {
-  this.setupObjects();
+  this.setupObjects(true);
   game.assetManager.clearAssets();
   this.callback();
 };
@@ -34,10 +34,12 @@ State.prototype.loadAssets = function() {
   game.assetManager.loadAssets(this.start.bind(this));
 };
 
-State.prototype.setupObjects = function() {
+State.prototype.setupObjects = function(returnAssets) {
   //Set the assetManager's objects and audio into the state to hold
-  this.object = game.assetManager.object;
-  this.audio = game.assetManager.audio;
+  if (returnAssets) {
+    this.object = game.assetManager.object;
+    this.audio = game.assetManager.audio;
+  }
 
   //And now, set it for the game
   game.world.object = this.object;

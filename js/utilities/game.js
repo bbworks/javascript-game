@@ -90,37 +90,8 @@ const Game = function() {
 	//Initialize variables (var player/gameObjects/utilities = Class.create()
 	this.context = context;
 
-	const Viewport = function(x, y, width, height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.isViewable = function(object) {
-			return (
-	      (this.y < object.y + object.height) && //mytop < bottom
-	      (this.y + this.height > object.y) && //mybottom > top
-	      (this.x < object.x + object.width) && //myleft < right
-	      (this.x + this.width >  object.x) //myright > left
-	    )
-		}
-	};
-
-	this.viewport = new Viewport(0,0,this.context.canvas.width,this.context.canvas.height);
-
 	this.world = {
 		object: {},
-		testCollision: function(object) {
-			if (self.world.object.hasOwnProperty("tilesheet") && self.world.object.tilesheet.hasOwnProperty("blocks")) {
-				var blocksArray = self.world.object.tilesheet.blocks;
-				for(var i = 0; i < blocksArray.length; i++) {
-					var block = blocksArray[i];
-					if (block.isCollidable && block.isColliding(object)) {
-					 /*DEBUG*/ //console.log(true);
-					 object.collide(block);
-				 }
-				}
-			}
-		}, //end testCollision
 	};
 
 	this.start = function() {
@@ -128,11 +99,14 @@ const Game = function() {
 		this.state = new StateStack(this);
 		this.controller = new Controller(this.context.canvas);
 		this.assetManager = new AssetManager(this);
+		this.collisionSystem = new CollisionSystem(this);
+		this.viewport = new Viewport(0,0,this.context.canvas.width,this.context.canvas.height, this);
 		setupAudio();
 		//for mobile only, show the on-screen controller
 		if (window.matchMedia("(max-width: 600px)").matches) {
 			this.controller.setupOnScreenController();
 		}
+		this.assetManager.initLoadingScreen(this);
 		this.state.push(new MainMenuState(this, this.engine.start));
 	}
 
@@ -143,6 +117,23 @@ const Game = function() {
 
 	console.log("End of \"game.js\".");
 };
+
+window.addEventListener ("error", function(error) {
+    var defaultMessage = "[ERROR] The game failed to run.";
+		if (error.message.toLowerCase().match(/script error/)) {
+			window.alert(`${defaultMessage}\r\n`+
+				`Review the browser console for more information (Ctrl+Shift+I).`);
+		} else {
+			window.alert(`${defaultMessage}\r\n`+
+				`+ Error message: ${error.message}\r\n`+
+				`+ File: ${error.filename || null}\r\n`+
+				`+ Line: ${(error.lineno == 0 ? null : error.lineno)}\r\n`+
+				`+ Column: ${(error.colno == 0 ? null : error.colno)}\r\n`+
+				`+ Error: ${JSON.stringify(error.error)}`
+			);
+		}
+    return false;
+});
 
 const game = new Game();
 game.start();
