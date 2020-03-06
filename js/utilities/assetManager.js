@@ -85,7 +85,7 @@ AssetManager.prototype.loadAssets = function(callback) {
   else {
     for(var i=0; i < this.paths.length; i++) {
       const path = this.paths[i];
-      var fileExtension = path.match(/.+(?<extension>\.\w+)/).groups.extension;
+      var fileExtension = path.match(/.+(\.\w+)/)[1];
 
       switch (fileExtension) {
         case ".jpg":
