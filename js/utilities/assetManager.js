@@ -144,9 +144,5 @@ AssetManager.prototype.resetLoadingScreen = function() {
   this.loadedBar.style.cssText = this.loadedBar.style.cssText.replace(/width:\s*([\d]+)([\w*%]+)/, "width:0$2");
 
   //Now hide the loading bar
-  if (this.loadingBar.style.cssText.match(/display\s*:\s*(\w+)/)) {
-    this.loadingBar.style.cssText.replace(/display\s*:\s*(\w+)/, "display:none");
-  } else {
-    this.loadingBar.style.cssText += "display:none;"
-  }
+  game.css.styleElement(this.loadingBar, "display", "none");
 };

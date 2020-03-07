@@ -1,7 +1,4 @@
-function Controller (canvas) {
-  //Declare private constants and variables
-
-  //Declare public variables
+function Controller (game) {
   this.key = {
     left: false,
     up: false,
@@ -31,7 +28,19 @@ function Controller (canvas) {
   this.screenController.joystick.name = "joystick";
 
   //Declare private variables
-  var joystickMovement = 25;
+  var controllerContainer = document.getElementById("controller-container");
+  var containerInfo = controllerContainer.getBoundingClientRect();
+
+  var joystickHorizontalMovement = 15;
+  var joystickVerticalMovement = 25;
+
+  var buttonSize = 60;
+
+  var dPadCenterLeftOffset = 65;
+  var dPadButtonSpacing = buttonSize*0.8;
+  var joystickCenterRightOffset = 30;
+  var middleHeight = (containerInfo.height-buttonSize)/2;
+
   const self = this;
 
   //Create functions that need to access private data as public functions
@@ -84,10 +93,10 @@ function Controller (canvas) {
       //console.log(`${x}, ${y}`);
       //console.log(`${deltaX}, ${deltaY}`);
       //console.log(`slope: ${slope}`);
-      if (deltaX < -joystickMovement) {
+      if (deltaX < -joystickHorizontalMovement) {
         self.key.left = true;
         self.key.right = false;
-      } else if (deltaX > joystickMovement) {
+      } else if (deltaX > joystickHorizontalMovement) {
         self.key.left = false;
         self.key.right = true;
       }
@@ -96,10 +105,10 @@ function Controller (canvas) {
         self.key.left = false;
       }
 
-      if (deltaY < -joystickMovement) {
+      if (deltaY < -joystickVerticalMovement) {
         self.key.up = true;
         self.key.down = false;
-      } else if (deltaY > joystickMovement) {
+      } else if (deltaY > joystickVerticalMovement) {
         self.key.up = false;
         self.key.down = true;
       }
@@ -121,26 +130,31 @@ function Controller (canvas) {
     } else if (event.type == "touchend") {
       self.touch[this.name] = false;
     }
-    //console.log(this.name, self.touch[this.name])
   };
 
-  var positionScreenControllerButtons = function() {
-    var speakerPosition = canvas.getBoundingClientRect();
-    var dPadLeftOffset = 75;
-    var dPadButtonSpacing = 30;
-    var joystickRightOffset = 100;
-    var bottomOffset = 35;
+  var setupScreenControllerContainer = function() {
+    game.css.styleElement(controllerContainer, "display", "block");
+  };
 
-    self.screenController.joystick.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+bottomOffset)+"px;left:"+(speakerPosition.right-joystickRightOffset)+"px;";
-    self.screenController.left.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+bottomOffset)+"px;left:"+(speakerPosition.left-dPadButtonSpacing+dPadLeftOffset)+"px;";
-    self.screenController.up.style.cssText += "position:absolute;top:"+(speakerPosition.bottom-dPadButtonSpacing+bottomOffset)+"px;left:"+(speakerPosition.left+dPadLeftOffset)+"px;";
-    self.screenController.right.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+bottomOffset)+"px;left:"+(speakerPosition.left+dPadButtonSpacing+dPadLeftOffset)+"px;";
-    self.screenController.down.style.cssText += "position:absolute;top:"+(speakerPosition.bottom+dPadButtonSpacing+bottomOffset)+"px;left:"+(speakerPosition.left+dPadLeftOffset)+"px;";
+  var setupScreenControllerButtons = function(isLandscape) {
+    var size = buttonSize * (isLandscape ? 0.5 : 1);
+
+    for(button in self.screenController) {
+      var button = self.screenController[button];
+      game.css.styleElement (button, "position", "absolute");
+      game.css.styleElement (button, "width", size+"px");
+      game.css.styleElement (button, "height", size+"px");
+      game.css.styleElement (button, "font-size", "20px");
+      game.css.styleElement (button, "background-color", "rgb(255,0,0)");
+      game.css.styleElement (button, "border", "none");
+      game.css.styleElement (button, "text-decoration", "none");
+      game.css.styleElement (button, "border-radius", "50%");
+      controllerContainer.appendChild(button);
+    }
   };
 
   var setupScreenControllerDPad = function() {
-    //Set up & display the on-screen d-pad
-		for (var button in self.screenController) {
+    for (var button in self.screenController) {
 			if (button != "joystick") {
         self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
 	      self.screenController[button].addEventListener("touchstart", handleDPadTouch);
@@ -157,21 +171,81 @@ function Controller (canvas) {
     self.screenController.joystick.addEventListener("touchend", handleJoystickTouch);
   };
 
-  this.setupOnScreenController = function () {
-    for (var button in self.screenController) {
-      self.screenController[button].style = "width:40px;height:40px;font-size:20px;background-color:rgb(255,0,0);border:none;text-decoration:none;border-radius:50%;";
-      document.body.appendChild(self.screenController[button]);
-  	}
+  var positionScreenControllerButtons = function(isLandscape) {
+    var spacing = dPadButtonSpacing * (isLandscape ? 0.5 : 1);
+    var dPadOffset = dPadCenterLeftOffset - (isLandscape ? 20 : 0);
+    var joystickOffset = joystickCenterRightOffset + (isLandscape ? 15 : 0);
+
+    self.screenController.joystick.style.cssText += "top:"+middleHeight+"px;right:"+joystickOffset+"px;";
+    self.screenController.left.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset-spacing)+"px;";
+    self.screenController.up.style.cssText += "top:"+(middleHeight-spacing)+"px;left:"+dPadOffset+"px;";
+    self.screenController.right.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset+spacing)+"px;";
+    self.screenController.down.style.cssText += "top:"+(middleHeight+spacing)+"px;left:"+dPadOffset+"px;";
+
+    if (isLandscape) {
+      game.css.styleElement(game.context.canvas, "z-index", "1");
+      game.css.styleElement(game.context.canvas, "position", "relative");
+      game.css.styleElement(controllerContainer, "bottom", "0");
+      game.css.styleElement(controllerContainer, "left", "-"+100+"px");
+      game.css.styleElement(controllerContainer, "width", (game.css.getAttribute(game.context.canvas, "width", true)+200)+"px");
+    } else {
+      game.css.styleElement(game.context.canvas, "z-index", null);
+      game.css.styleElement(game.context.canvas, "position", null);
+      game.css.styleElement(controllerContainer, "bottom", null);
+      game.css.styleElement(controllerContainer, "left", null);
+      game.css.styleElement(controllerContainer, "width", game.css.getAttribute(game.context.canvas, "width", true)+"px");
+    }
+  };
+
+  this.setupOnScreenController = function (isLandscape) {
+    setupScreenControllerContainer();
+    setupScreenControllerButtons(isLandscape);
     setupScreenControllerDPad();
     setupScreenControllerJoystick();
-  	positionScreenControllerButtons();
-    window.addEventListener("resize", positionScreenControllerButtons);
+    positionScreenControllerButtons(isLandscape);
+  }
+
+  this.hideOnScreenController = function () {
+    game.css.styleElement(controllerContainer, "display", "none");
+  }
+
+  this.resize = function (game) {
+    var screenWidth = document.documentElement.clientWidth;
+		var screenHeight = document.documentElement.clientHeight;
+
+    if (window.matchMedia("(min-width: 1200px)").matches) {
+			//Desktop
+			console.log(`Desktop | ${screenWidth}px x ${screenHeight}px`);
+      game.context.canvas.style.width = "900px";
+			this.hideOnScreenController();
+		} else if (window.matchMedia("(min-width: 992px)").matches) {
+			//Tablet, landscape
+			console.log(`Tablet, landscape | ${screenWidth}px x ${screenHeight}px`);
+      game.context.canvas.style.width = "800px";
+			this.setupOnScreenController(true);
+		} else if (
+        window.matchMedia("(min-width: 768px)").matches ||
+        window.matchMedia("(min-width: 600px) and (orientation: portrait)").matches
+      ) {
+			//Tablet, portrait
+			console.log(`Tablet, portrait | ${screenWidth}px x ${screenHeight}px`);
+      game.context.canvas.style.width = "700px";
+			this.setupOnScreenController(false);
+		}	else if (window.matchMedia("(min-width: 600px) and (orientation: landscape)").matches) {
+      //Mobile, landscape
+      console.log(`Mobile, landscape | ${screenWidth}px x ${screenHeight}px`);
+      game.context.canvas.style.width = "500px";
+      this.setupOnScreenController(true);
+    } else /*(max-width: 600px)*/{
+			//Mobile portrait
+      console.log(`Mobile, portrait | ${screenWidth}px x ${screenHeight}px`);
+      game.context.canvas.style.width = "350px";
+			this.setupOnScreenController(false);
+		}
   }
 
   window.addEventListener("keydown", handleKeyDownUp);
   window.addEventListener("keyup", handleKeyDownUp);
 } //end constructor
 
-Controller.prototype = {
-  constructor: Controller
-}
+Controller.prototype.constructor =  Controller;

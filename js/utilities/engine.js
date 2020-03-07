@@ -2,7 +2,7 @@ function Engine (fps, update, render) {
 	console.log("Inside \"engine.js\".");
 
 	//Declare private constants and variables
-  var fpsDiv;
+  var fpsContainer;
 	var isRunning = false;
 	var isUpdated;
 	var animationFrame;
@@ -27,9 +27,9 @@ function Engine (fps, update, render) {
 	this.gameFPS;
 
 	//Create the FPS div module
-  fpsDiv = document.createElement("div");
-	fpsDiv.innerHTML = `Engine FPS: ${null} Game FPS: ${null}`;
-  document.body.appendChild(fpsDiv);
+  fpsContainer = document.getElementById("fps-container");
+	fpsContainer.innerHTML = `Engine FPS: ${null} | Game FPS: ${null}`;
+  document.body.appendChild(fpsContainer);
 
 	var handleThrottle = function() {
 		if (self.engineFPS <= throttleCap) {
@@ -62,7 +62,7 @@ function Engine (fps, update, render) {
 	};
 
 	var updateFps = function() {
-    	fpsDiv.innerHTML = `Engine FPS: ${self.engineFPS} Game FPS: ${self.gameFPS}`; //Only display updated value every so often
+    	fpsContainer.innerHTML = `Engine FPS: ${self.engineFPS} | Game FPS: ${self.gameFPS}`; //Only display updated value every so often
   };
 
 	var handleGameUpdate = function() {

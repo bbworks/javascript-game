@@ -6,7 +6,7 @@
 <html class="no-js">
   <head>
     <meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
 		<meta name="description" content="A simple 2-d platformer.">
     <title>2-D World</title>
@@ -22,7 +22,7 @@
       </div>
     </header>
     <main class="flex-container-column full full-height background-image">
-      <section class="content flex-column-middle full-height">
+      <section class="content flex-column-middle">
         <h1>8Bit-venture</h1>
         <div id="game-content">
           <canvas id="canvas">Your browser does not support the HTML5 canvas tag.</canvas>
@@ -30,10 +30,11 @@
             Loading...
             <div id="loaded-container"></div>
           </div>
-          <div id="onScreenController-div"></div>
+          <div id="controller-container"></div>
         </div>
         <div class="main-content"></div>
       </section>
+      <div id="fps-container"></div>
     </main>
     <script src="js/objects/gameObject.js"></script>
     <script src="js/objects/movingObject.js"></script>

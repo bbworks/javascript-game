@@ -1,10 +1,21 @@
+/*CONVERSION*/
+/*1px = 3/4pt = 1/16em = 0.12671875vw*/
+
+/*-----------
+//  UNIVERSAL
+------------------------------*/
+
 body {
-  height: 100vh;
+  overflow-x: hidden;
 }
 
 body, body * {
   margin: 0;
 }
+
+/*-----------
+//  UNIVERSAL CLASSES
+------------------------------*/
 
 .content {
   background-color: rgb(250,250,250);
@@ -36,10 +47,13 @@ body, body * {
   width: 100%;
 }
 
-
 .full-height {
   height: 100%;
 }
+
+/*-----------
+//  BODY
+------------------------------*/
 
 main {
   display: flex;
@@ -76,16 +90,48 @@ main h1 {
   padding: 30px 0px 20px 0px;
 }
 
-canvas {
+#canvas {
   border: 1px solid lightGray /*#d3d3d3 rgb(211,211,211)*/;
 }
 
-@media screen and (max-width: 600px) {
-  .content {
-    height: 65vh;
+div#controller-container {
+  position: absolute;
+  width: 100%;
+  height: 175px;
+  background-color: rgb(50,50,50);
+}
+
+div#fps-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(245,245,245);
+  text-align: center;
+  font-family: monospace;
+  z-index: 99;
+}
+
+/*-----------
+//  MEDIA
+------------------------------*/
+
+/*For mobile screen in portrait orientation*/
+@media screen and (orientation: portrait) {
+  body {
+    height: 100vh;
+  }
+
+  div.main-content {
+    height: 0;
   }
 
   .background-image {
     background-size: 100vw 100vh;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  div.main-content {
+    height: 15px;
   }
 }
