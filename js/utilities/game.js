@@ -11,47 +11,6 @@ const Game = function(width, aspectRatio) {
 	this.isPaused = false;
 	this.isMuted = true;
 
-  //Setup the volume button
-	var setupAudio = function() {
-		self.audio = {
-			button: document.createElement("button"),
-			music: new Audio(),
-		}
-
-		//Initialize the game audio
-		self.audio.music.muted = (self.isMuted ? true : false);
-		self.audio.music.loop = true;
-		if (!self.isMuted) {
-			self.audio.music.play(); //Start the audio if unmuted
-		}
-
-		//Display the volume button
-		var toggleSpeaker = function() {self.audio.button.setAttribute("class", (self.isMuted ? "fas fa-volume-down" : "fas fa-volume-up"));}
-	  self.audio.button.style = "color:white;background-color:rgba(0,0,0,0);border:none;text-decoration:none;";
-		toggleSpeaker();
-
-		//Add an event handler to toggle the button onclick
-		self.audio.button.addEventListener("click", function() {
-			self.isMuted = !self.isMuted;
-			if (self.audio.music.paused) {
-				self.audio.music.play();
-			}
-			self.audio.music.muted = (self.isMuted ? true : false);
-			toggleSpeaker();
-		});
-
-	  //Set the top and left based on the canvas top & left
-		// (placing button OVERTOP canvas ;D),
-		// and let's also add this to the window resize
-		var positionSpeaker = function() {
-			var speakerPosition = canvas.getBoundingClientRect();
-		  self.audio.button.style.cssText += "position:absolute;top:"+(speakerPosition.top+5)+"px;left:"+(speakerPosition.left+5)+"px;";
-		}
-		positionSpeaker();
-	  document.body.appendChild(self.audio.button);
-		window.addEventListener("resize", positionSpeaker);
-	}
-
 	this.update = function() {
 		if (self.world.object.hasOwnProperty("player")) {
 			if (self.controller.key.left || self.controller.touch.left) {
@@ -78,8 +37,8 @@ const Game = function(width, aspectRatio) {
 
 	this.resize = function(event) {
 		self.controller.resize(self);
+		self.audio.positionSpeaker();
 	}
-
 
 	//Initialize variables (var player/gameObjects/utilities = Class.create()
 	this.context = document.getElementById("canvas").getContext("2d");
@@ -91,32 +50,38 @@ const Game = function(width, aspectRatio) {
 		object: {},
 	};
 
-	this.css = {
-		getAttribute: function(element, attribute, isNumber) {
-			var regEx;
-			if (isNumber) {
-				regEx = new RegExp(attribute+"\\s*:\\s*([\\d]+)[\\w%]*;")
-			} else {
-				regEx = new RegExp(attribute+"\\s*:\\s*([\\d\\w%]+);")
-			}
-			var match = element.style.cssText.match(regEx)
-			if (match) {
-				return (isNumber ? Number(match[1]) : match[1]);
-			}
-			else {
-				return false;
-			}
+	this.audio = {
+		button: document.createElement("button"),
+		music: new Audio(),
+		setupAudioButton: function() {
+			this.button.style = "color:white;background-color:rgba(0,0,0,0);border:none;text-decoration:none;";
 		},
-		styleElement: function(element, attribute, value) {
-			var regEx = new RegExp(attribute+"\\s*:\\s*(-*[\\d\\w]+);");
-
-			if (value == null) {
-				element.style.cssText = element.style.cssText.replace(regEx, "");
-			} else if (element.style.cssText.match(regEx)) {
-	      element.style.cssText = element.style.cssText.replace(regEx, `${attribute}:${value};`);
-	    } else {
-	      element.style.cssText += `${attribute}:${value};`
-	    }
+		toggleSpeaker: function() {
+			self.audio.button.setAttribute("class", (self.isMuted ? "fas fa-volume-down" : "fas fa-volume-up"));
+		},
+		positionSpeaker: function() {
+			var speakerPosition = canvas.getBoundingClientRect();
+		  self.audio.button.style.cssText += "position:absolute;top:"+(speakerPosition.top+5)+"px;left:"+(speakerPosition.left+5)+"px;";
+		},
+		onClick: function() {
+			self.isMuted = !self.isMuted;
+			if (self.audio.music.paused) {
+				self.audio.music.play();
+			}
+			self.audio.music.muted = (self.isMuted ? true : false);
+			this.toggleSpeaker();
+		},
+		setupAudio: function() {
+			this.music.muted = (self.isMuted ? true : false);
+			this.music.loop = true;
+			if (!self.isMuted) {
+				this.music.play(); //Start the audio if unmuted
+			}
+			this.setupAudioButton()
+			this.toggleSpeaker();
+			this.positionSpeaker();
+			this.button.addEventListener("click", this.onClick);
+			document.body.appendChild(this.button);
 		},
 	};
 
@@ -130,10 +95,10 @@ const Game = function(width, aspectRatio) {
 		this.viewport = new Viewport(0,0,this.context.canvas.width,this.context.canvas.height, this);
 
 		//Setup game
-		this.resize(); //Let's set up the canvas as appropriate
+		this.audio.setupAudio();
+		this.resize();
 		window.addEventListener("resize", this.resize);
 		window.addEventListener("orientationchange", this.resize);
-		setupAudio();
 		this.assetManager.initLoadingScreen(this);
 
 		//Start the game by pushing the first state

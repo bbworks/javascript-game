@@ -35,9 +35,11 @@ function Controller (game) {
   var joystickVerticalMovement = 25;
 
   var buttonSize = 60;
+  var buttonSizeLandscape = buttonSize * 0.6;
 
   var dPadCenterLeftOffset = 65;
   var dPadButtonSpacing = buttonSize*0.8;
+  var dPadButtonSpacingLandscape = dPadButtonSpacing * 0.6;
   var joystickCenterRightOffset = 30;
   var middleHeight = (containerInfo.height-buttonSize)/2;
 
@@ -133,22 +135,22 @@ function Controller (game) {
   };
 
   var setupScreenControllerContainer = function() {
-    game.css.styleElement(controllerContainer, "display", "block");
+    controllerContainer.style.display = "block";
   };
 
   var setupScreenControllerButtons = function(isLandscape) {
-    var size = buttonSize * (isLandscape ? 0.5 : 1);
+    var size = (isLandscape ? buttonSizeLandscape : buttonSize);
 
     for(button in self.screenController) {
       var button = self.screenController[button];
-      game.css.styleElement (button, "position", "absolute");
-      game.css.styleElement (button, "width", size+"px");
-      game.css.styleElement (button, "height", size+"px");
-      game.css.styleElement (button, "font-size", "20px");
-      game.css.styleElement (button, "background-color", "rgb(255,0,0)");
-      game.css.styleElement (button, "border", "none");
-      game.css.styleElement (button, "text-decoration", "none");
-      game.css.styleElement (button, "border-radius", "50%");
+      button.style.position = "absolute";
+      button.style.width = size+"px";
+      button.style.height = size+"px";
+      button.style.fontSize = "20px";
+      button.style.backgroundColor = "rgb(255,0,0)";
+      button.style.border = "none";
+      button.style.textDecoration = "none";
+      button.style.borderRadius = "50%";
       controllerContainer.appendChild(button);
     }
   };
@@ -172,9 +174,15 @@ function Controller (game) {
   };
 
   var positionScreenControllerButtons = function(isLandscape) {
-    var spacing = dPadButtonSpacing * (isLandscape ? 0.5 : 1);
+    var canvasRect = game.context.canvas.getBoundingClientRect();
+    var screenRect = document.body.getBoundingClientRect();
+    var sideMargin = (screenRect.width - canvasRect.width)/2;
+    var size = (isLandscape ? buttonSizeLandscape : buttonSize);
+
+    var spacing = (isLandscape ? dPadButtonSpacingLandscape : dPadButtonSpacing);
     var dPadOffset = dPadCenterLeftOffset - (isLandscape ? 20 : 0);
-    var joystickOffset = joystickCenterRightOffset + (isLandscape ? 15 : 0);
+    var dPadOffset = (isLandscape ? (sideMargin-size)/2 : dPadCenterLeftOffset);
+    var joystickOffset = (isLandscape ? (sideMargin-size)/2 : joystickCenterRightOffset);
 
     self.screenController.joystick.style.cssText += "top:"+middleHeight+"px;right:"+joystickOffset+"px;";
     self.screenController.left.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset-spacing)+"px;";
@@ -182,18 +190,20 @@ function Controller (game) {
     self.screenController.right.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset+spacing)+"px;";
     self.screenController.down.style.cssText += "top:"+(middleHeight+spacing)+"px;left:"+dPadOffset+"px;";
 
+    game.context.canvas.style.zIndex = "1";
+    game.audio.button.style.zIndex = "2";
+
     if (isLandscape) {
-      game.css.styleElement(game.context.canvas, "z-index", "1");
-      game.css.styleElement(game.context.canvas, "position", "relative");
-      game.css.styleElement(controllerContainer, "bottom", "0");
-      game.css.styleElement(controllerContainer, "left", "-"+100+"px");
-      game.css.styleElement(controllerContainer, "width", (game.css.getAttribute(game.context.canvas, "width", true)+200)+"px");
+      game.context.canvas.style.position = "relative";
+      controllerContainer.style.bottom = canvasRect.height/5+"px";
+      controllerContainer.style.left = "-"+sideMargin+"px";
+      controllerContainer.style.width = screenRect.width+"px";
     } else {
-      game.css.styleElement(game.context.canvas, "z-index", null);
-      game.css.styleElement(game.context.canvas, "position", null);
-      game.css.styleElement(controllerContainer, "bottom", null);
-      game.css.styleElement(controllerContainer, "left", null);
-      game.css.styleElement(controllerContainer, "width", game.css.getAttribute(game.context.canvas, "width", true)+"px");
+      game.context.canvas.style.zIndex = null;
+      game.context.canvas.style.position = null;
+      controllerContainer.style.bottom = null;
+      controllerContainer.style.left = null;
+      controllerContainer.style.width = canvasRect.width+"px";
     }
   };
 
@@ -206,7 +216,7 @@ function Controller (game) {
   }
 
   this.hideOnScreenController = function () {
-    game.css.styleElement(controllerContainer, "display", "none");
+    controllerContainer.style.display = "none";
   }
 
   this.resize = function (game) {

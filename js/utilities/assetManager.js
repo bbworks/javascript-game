@@ -123,7 +123,7 @@ AssetManager.prototype.clearAssets = function() {
 };
 
 AssetManager.prototype.initLoadingScreen = function(game) {
-  var canvas = game.context.canvas;
+  var canvas = game.context.canvas.getBoundingClientRect();
   var loadingBarWidth = canvas.width*0.75;
   var loadingBarHeight = 25;
   this.gameContent.style.cssText = "position:relative;";
@@ -144,5 +144,5 @@ AssetManager.prototype.resetLoadingScreen = function() {
   this.loadedBar.style.cssText = this.loadedBar.style.cssText.replace(/width:\s*([\d]+)([\w*%]+)/, "width:0$2");
 
   //Now hide the loading bar
-  game.css.styleElement(this.loadingBar, "display", "none");
+  this.loadingBar.style.display = "none";
 };
