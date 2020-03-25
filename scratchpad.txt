@@ -15,6 +15,18 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  X implemented game stop on loss of focus--done, public engine.isRunning and onblur/onfocus DOM event
+  X implement audio engine
+    * private tracks
+    * supports currentTrack, and sounds
+    * supports masterVolume, and individual volumes (audio.volume = masterVolume * volume)
+    * support masterMute, and individual mutes (audio.muted = (masterMuted) ? true : audio.muted)
+    * supports fadeeeee
+    * work out the kinks with maintaining master settings and individual track settings
+    _ now problem with volume buttons appearing ABOVE canvas when scrolled to bottom--has to do with volume buttons being after canvas?
+  X implement inertia/friction in player movement--done, MovingObject.accel
+  X expand Controller to actually be used by everything--now used for clicking to start game
+  _ use handler classes?
   X produce visible error if something fails?--done--window.onerror that calls window.alert
   x implement splash/loading screen--simple loading bar but it does the trick for now
   x add moving platform
@@ -33,7 +45,6 @@ LATEST RELEASE
         ^ stopped
         ^ unphased/unmoved--well..no collision
     * two collisions--motion collision (blocked movement) and non-motion (powerups, coins, enemies that don't stop movement)?
-
   X implement easy getTop/Left/Bottom/Right functions in GameObject/MovingObject class--done
   X clean up global namespace--check for any variables that weren't scoped--I think I'm already good
   X fix issue where we can still click and activate MainMenuState.onClick() on level1State

@@ -1,13 +1,13 @@
 function Default () {
-  ParentClass.call();
+	ParentClass.call();
 
-  //Declare public properties
-
-
-  //Declare private constants and variables
+	//Declare public properties
 
 
-  //Create functions that need to access private data as public functions
+	//Declare private constants and variables
+
+
+	//Create functions that need to access private data as public functions
 
 
 } //end constructor

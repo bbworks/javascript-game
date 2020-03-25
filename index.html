@@ -16,9 +16,13 @@
   </head>
   <body class="flex-container-column">
     <header class="full flex-container-column">
-      <div class="full">
+      <div class="header-container full">
         <img class="header-logo" src="https://ctl.s6img.com/society6/img/jwE1eOKuenQr8uj4rlRFnlLfvR0/w_700/prints/~artwork/s6-0070/a/28718738_11658467/~~/8-bit-block-ground-prints.jpg">
         <h1 class="header-name">2D World</h1>
+        <div id="debug-container" class="checkbox-container">
+          <input type="checkbox" id="debug-checkbox" />
+          <span id="debug-span">Debug</span>
+        </div>
       </div>
     </header>
     <main class="flex-container-column full full-height background-image">
@@ -36,6 +40,8 @@
       </section>
       <div id="fps-container"></div>
     </main>
+    <textarea id="debug-input" class="debug-textarea" placeholder="Test here..."></textarea>
+    <textarea id="debug-response" class="debug-textarea" readonly placeholder=">"></textarea>
     <script src="js/objects/gameObject.js"></script>
     <script src="js/objects/movingObject.js"></script>
     <script src="js/objects/block.js"></script>
@@ -50,6 +56,7 @@
     <script src="js/states/mainMenuState.js"></script>
     <script src="js/states/level1State.js"></script>
     <script src="js/states/pauseMenuState.js"></script>
+    <script src="js/utilities/audioEngine.js"></script>
     <script src="js/utilities/collisionSystem.js"></script>
     <script src="js/utilities/assetManager.js"></script>
     <script src="js/utilities/viewport.js"></script>

@@ -69,13 +69,10 @@ header {
   background-repeat: repeat;
 }
 
-header > div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
+.header-container {
   background-color: rgb(0, 0, 0, 0.3);
   padding: 0.5em;
+  line-height: 8px;
 }
 
 .header-logo {
@@ -84,9 +81,25 @@ header > div {
 }
 
 .header-name {
+  display: inline-block;
   font-weight: lighter;
   color: #ffffff;
   font-family: Helvetica neue, roboto;
+  font-size: 2em;
+  line-height: 2em;
+}
+
+#debug-container {
+  display: inline-block;
+  float: right;
+}
+
+#debug-checkbox {
+
+}
+
+#debug-span {
+  color: white;
 }
 
 main {
@@ -101,19 +114,21 @@ main h1 {
   font-size: 36px;
 }
 
-section.content {
+canvas {
+  background-color: rgb(225,225,225);
+}
+
+.content {
   background-color: rgb(250,250,250);
   margin-bottom: 15px; /*add a buffer space for the fps-container*/
 }
 
-div#controller-container {
+#controller-container {
   position: absolute;
-  width: 100%;
-  height: 175px;
   background-color: rgb(50,50,50);
 }
 
-div#fps-container {
+#fps-container {
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -123,58 +138,111 @@ div#fps-container {
   z-index: 99;
 }
 
+#volume-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  opacity: 0.5;
+  width: 0;
+  transition: 0.3s;
+}
+
+#volume-button:hover + #volume-slider {
+  opacity: 1;
+  width: 100px;
+}
+
+#volume-slider:hover {
+  opacity: 1;
+  width: 100px;
+}
+
+#volume-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgb(200, 200, 200);
+}
+
+#volume-slider::-moz-range-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgb(200, 200, 200);
+}
+
+.debug-textarea {
+  display: none;
+  position: fixed;
+  right: 0;
+  width: 100px;
+}
+
+#debug-input {
+  height: 40vh;
+  resize: none;
+}
+
+#debug-response {
+  bottom: 0;
+  height: 60vh;
+  resize: none;
+}
+
 /*-----------
 //  MEDIA
 ------------------------------*/
 
 /*For mobile, tablet, or desktop in landscape orientation*/
 @media screen and (orientation: landscape) {
-  header > div {
+  .header-container {
     background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(255,255,255,0.1));
   }
 
   .header-name {
     color: white;
     font-size: 1.5em;
+    line-height: 1.5em;
     padding-left: 0.3em;
     background-color: transparent;
   }
 
-  section.content {
+  .content {
     margin-bottom: 15px;
   }
 }
 
 /*For mobile, tablet, or desktop in portrait orientation*/
 @media screen and (orientation: portrait) {
-  main h1 {
-    padding: 10px 0px 5px 0px;
+  .header-container {
+    /*display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;*/
+    text-align: center;
   }
 
   .header-logo {
+    display: block;
+    margin: auto;
     width: 3em;
     height: 3em;
   }
 
-  header > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: nowrap;
+  .header-name {
+    line-height: 1em;
   }
 
-  .header-name {
-    /*background-color: #fff;*/
+  #debug-container {
+    display: block;
+    float: none;
   }
 }
 
 /*For mobile screens in landscape orientation*/
 @media screen and (max-height: 375px) and (orientation: landscape) {
-  header > div {
-    padding: 0.4em;
-  }
 
-  main h1 {
-    font-size: 24px;
-  }
 }

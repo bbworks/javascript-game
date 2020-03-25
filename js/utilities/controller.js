@@ -1,261 +1,319 @@
 function Controller (game) {
-  this.key = {
-    left: false,
-    up: false,
-    right: false,
-    down: false,
-  };
+	this.key = {
+	  left: false,
+	  up: false,
+	  right: false,
+	  down: false,
+	};
 
-  this.touch = {
-    left: false,
-    up: false,
-    right: false,
-    down: false,
-  };
+	this.touch = {
+	  left: false,
+	  up: false,
+	  right: false,
+	  down: false,
+	};
 
-  this.screenController = {
-    left: document.createElement("button"),
-    up: document.createElement("button"),
-    right: document.createElement("button"),
-    down: document.createElement("button"),
-    joystick: document.createElement("button")
-  };
+	this.mouse = {
+	  left: false,
+	  right: false,
+	  x: null,
+	  y: null,
+	};
 
-  this.screenController.left.name = "left";
-  this.screenController.up.name = "up";
-  this.screenController.right.name = "right";
-  this.screenController.down.name = "down";
-  this.screenController.joystick.name = "joystick";
+	this.screenController = {
+	  left: document.createElement("button"),
+	  up: document.createElement("button"),
+	  right: document.createElement("button"),
+	  down: document.createElement("button"),
+	  joystick: document.createElement("button")
+	};
 
-  //Declare private variables
-  var controllerContainer = document.getElementById("controller-container");
-  var containerInfo = controllerContainer.getBoundingClientRect();
+	this.screenController.left.name = "left";
+	this.screenController.up.name = "up";
+	this.screenController.right.name = "right";
+	this.screenController.down.name = "down";
+	this.screenController.joystick.name = "joystick";
 
-  var joystickHorizontalMovement = 15;
-  var joystickVerticalMovement = 25;
+	//Declare private variables
+	var controllerContainer = document.getElementById("controller-container");
 
-  var buttonSize = 60;
-  var buttonSizeLandscape = buttonSize * 0.6;
+	var joystickHorizontalMovement = 15;
+	var joystickVerticalMovement = 25;
 
-  var dPadCenterLeftOffset = 65;
-  var dPadButtonSpacing = buttonSize*0.8;
-  var dPadButtonSpacingLandscape = dPadButtonSpacing * 0.6;
-  var joystickCenterRightOffset = 30;
-  var middleHeight = (containerInfo.height-buttonSize)/2;
+	var buttonSize = 60;
+	var buttonSizeLandscape = buttonSize * 0.6;
 
-  const self = this;
+	var dPadCenterLeftOffset = 65;
+	var dPadButtonSpacing = buttonSize*0.8;
+	var dPadButtonSpacingLandscape = dPadButtonSpacing * 0.6;
+	var joystickCenterRightOffset = 30;
 
-  //Create functions that need to access private data as public functions
-  var handleKeyDownUp = function(event) {
-    var down = (event.type == "keydown") ? true : false;
+	const self = this;
 
-    //Assure keys (specifically arrows) don't perform default behavior
-    if (
-      event.keyCode == 37 ||
-      event.keyCode == 38 ||
-      event.keyCode == 39 ||
-      event.keyCode == 40
-    ) {
-      event.preventDefault();
-    }
+	//Create functions that need to access private data as public functions
+	var handleKeyDownUp = function(event) {
+	  var down = (event.type === "keydown") ? true : false;
 
-    switch (event.keyCode)
-    {
-      case 37:
-        self.key.left = down;
-        break;
-      case 38:
-        self.key.up = down;
-        break;
-      case 39:
-        self.key.right = down;
-        break;
-      case 40:
-        self.key.down = down;
-        break;
-    }
-    /*DEBUG*/ //console.log(`${self.left} ${self.up} ${self.right} ${self.down} `);
-    /*DEBUG*/ //console.log(`${event.type} ${event.keyCode} ${down}`);
-  }
+	  //Assure keys (specifically arrows) don't perform default behavior
+	  if (
+	    event.keyCode === 37 ||
+	    event.keyCode === 38 ||
+	    event.keyCode === 39 ||
+	    event.keyCode === 40
+	  ) {
+	    event.preventDefault();
+	  }
 
-  var handleJoystickTouch = function(event) {
-    event.preventDefault();
-    if (event.type == "touchstart" || event.type == "touchmove") {
-      var x = event.touches[0].pageX;
-      var y = event.touches[0].pageY;
-    }
-    if (event.type == "touchstart") {
-      initialX = x;
-      initialY = y;
-    }
-    var deltaX = x - initialX;
-    var deltaY = y - initialY;
-    //var slope = deltaY/deltaX;
-    if (event.type == "touchstart" || event.type == "touchmove") {
-      //console.log(`${x}, ${y}`);
-      //console.log(`${deltaX}, ${deltaY}`);
-      //console.log(`slope: ${slope}`);
-      if (deltaX < -joystickHorizontalMovement) {
-        self.key.left = true;
-        self.key.right = false;
-      } else if (deltaX > joystickHorizontalMovement) {
-        self.key.left = false;
-        self.key.right = true;
-      }
-      else {
-        self.key.right = false;
-        self.key.left = false;
-      }
+	  switch (event.keyCode)
+	  {
+	    case 37:
+	      self.key.left = down;
+	      break;
+	    case 38:
+	      self.key.up = down;
+	      break;
+	    case 39:
+	      self.key.right = down;
+	      break;
+	    case 40:
+	      self.key.down = down;
+	      break;
+	  }
+	  /*DEBUG*/ //console.log(`${self.left} ${self.up} ${self.right} ${self.down} `);
+	  /*DEBUG*/ //console.log(`${event.type} ${event.keyCode} ${down}`);
+	}
 
-      if (deltaY < -joystickVerticalMovement) {
-        self.key.up = true;
-        self.key.down = false;
-      } else if (deltaY > joystickVerticalMovement) {
-        self.key.up = false;
-        self.key.down = true;
-      }
-      else {
-        self.key.up = false;
-        self.key.down = false;
-      }
-    } else {
-      for (direction in self.key) {
-        self.key[direction] = false;
-      }
-    }
-  };
+	var handleMouseDownUp = function(event) {
+	  var isOnCanvas = event.srcElement === game.context.canvas;
+	  //self.mouse.x = event.clientX - clientRect.left;
+	  //self.mouse.y = event.clientY - clientRect.top;
 
-  var handleDPadTouch = function(event) {
-    event.preventDefault();
-    if (event.type == "touchstart") {
-      self.touch[this.name] = true;
-    } else if (event.type == "touchend") {
-      self.touch[this.name] = false;
-    }
-  };
+	  if (isOnCanvas) {
+	    var down = (event.type === "mousedown") ? true : false;
 
-  var setupScreenControllerContainer = function() {
-    controllerContainer.style.display = "block";
-  };
+	    //Assure keys (specifically arrows) don't perform default behavior
+	    if (
+	      event.button === 0  ||
+	      event.button === 2
+	    ) {
+	      event.preventDefault();
+	    }
 
-  var setupScreenControllerButtons = function(isLandscape) {
-    var size = (isLandscape ? buttonSizeLandscape : buttonSize);
+	    switch (event.button)
+	    {
+	      case 0:
+	        self.mouse.left = down;
+	        break;
+	      case 2:
+	        self.mouse.right = down;
+	        break;
+	    }
+	    /*DEBUG*/ //console.log(`Mouse.left: ${self.mouse.left}\r\nMouse.right: ${self.mouse.right}`);
+	  } //if (isOnCanvas)
+	}
 
-    for(button in self.screenController) {
-      var button = self.screenController[button];
-      button.style.position = "absolute";
-      button.style.width = size+"px";
-      button.style.height = size+"px";
-      button.style.fontSize = "20px";
-      button.style.backgroundColor = "rgb(255,0,0)";
-      button.style.border = "none";
-      button.style.textDecoration = "none";
-      button.style.borderRadius = "50%";
-      controllerContainer.appendChild(button);
-    }
-  };
+	var handleMouseMove = function(event) {
+	  var clientRect = game.context.canvas.getBoundingClientRect();
+	  self.mouse.x = event.clientX - clientRect.left;
+	  self.mouse.y = event.clientY - clientRect.top;
+	  /*DEBUG*/ //console.log(self.mouse.x, self.mouse.y);
+	}
 
-  var setupScreenControllerDPad = function() {
-    for (var button in self.screenController) {
-			if (button != "joystick") {
-        self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
-	      self.screenController[button].addEventListener("touchstart", handleDPadTouch);
-        self.screenController[button].addEventListener("touchend", handleDPadTouch);
-      }
+	var handleJoystickTouch = function(event) {
+	  event.preventDefault();
+	  if (event.type === "touchstart" || event.type === "touchmove") {
+	    var x = event.touches[0].pageX;
+	    var y = event.touches[0].pageY;
+	  }
+	  if (event.type === "touchstart") {
+	    initialX = x;
+	    initialY = y;
+	  }
+	  var deltaX = x - initialX;
+	  var deltaY = y - initialY;
+	  //var slope = deltaY/deltaX;
+	  if (event.type === "touchstart" || event.type === "touchmove") {
+	    //console.log(`${x}, ${y}`);
+	    //console.log(`${deltaX}, ${deltaY}`);
+	    //console.log(`slope: ${slope}`);
+	    if (deltaX < -joystickHorizontalMovement) {
+	      self.touch.left = true;
+	      self.touch.right = false;
+	    } else if (deltaX > joystickHorizontalMovement) {
+	      self.touch.left = false;
+	      self.touch.right = true;
+	    }
+	    else {
+	      self.touch.right = false;
+	      self.touch.left = false;
+	    }
+
+	    if (deltaY < -joystickVerticalMovement) {
+	      self.touch.up = true;
+	      self.touch.down = false;
+	    } else if (deltaY > joystickVerticalMovement) {
+	      self.touch.up = false;
+	      self.touch.down = true;
+	    }
+	    else {
+	      self.touch.up = false;
+	      self.touch.down = false;
+	    }
+	  } else {
+	    for (direction in self.touch) {
+	      self.touch[direction] = false;
+	    }
+	  }
+	};
+
+	var handleDPadTouch = function(event) {
+	  event.preventDefault();
+	  if (event.type === "touchstart") {
+	    self.touch[this.name] = true;
+	  } else if (event.type === "touchend") {
+	    self.touch[this.name] = false;
+	  }
+	};
+
+	var setupScreenControllerContainer = function() {
+	  controllerContainer.style.width = "100%";
+	  controllerContainer.style.height = "175px";
+	};
+
+	var setupScreenControllerButtons = function(isLandscape) {
+	  var size = (isLandscape ? buttonSizeLandscape : buttonSize);
+
+	  for(button in self.screenController) {
+	    var button = self.screenController[button];
+	    button.style.position = "absolute";
+	    button.style.width = size+"px";
+	    button.style.height = size+"px";
+	    button.style.fontSize = "20px";
+	    button.style.backgroundColor = "rgb(255,0,0)";
+	    button.style.border = "none";
+	    button.style.textDecoration = "none";
+	    button.style.borderRadius = "50%";
+	    controllerContainer.appendChild(button);
+	  }
+	};
+
+	var setupScreenControllerDPad = function() {
+	  for (var button in self.screenController) {
+			if (button !== "joystick") {
+	      self.screenController[button].setAttribute("class", "fas fa-arrow-"+button);
+		    self.screenController[button].addEventListener("touchstart", handleDPadTouch);
+	      self.screenController[button].addEventListener("touchend", handleDPadTouch);
+	    }
 		}
-  };
+	};
 
-  var setupScreenControllerJoystick = function() {
-    var initialX, initialY;
-    self.screenController.joystick.setAttribute("class", "fas fa-gamepad");
-    self.screenController.joystick.addEventListener("touchstart", handleJoystickTouch);
-    self.screenController.joystick.addEventListener("touchmove", handleJoystickTouch);
-    self.screenController.joystick.addEventListener("touchend", handleJoystickTouch);
-  };
+	var setupScreenControllerJoystick = function() {
+	  var initialX, initialY;
+	  self.screenController.joystick.setAttribute("class", "fas fa-gamepad");
+	  self.screenController.joystick.addEventListener("touchstart", handleJoystickTouch);
+	  self.screenController.joystick.addEventListener("touchmove", handleJoystickTouch);
+	  self.screenController.joystick.addEventListener("touchend", handleJoystickTouch);
+	};
 
-  var positionScreenControllerButtons = function(isLandscape) {
-    var canvasRect = game.context.canvas.getBoundingClientRect();
-    var screenRect = document.body.getBoundingClientRect();
-    var sideMargin = (screenRect.width - canvasRect.width)/2;
-    var size = (isLandscape ? buttonSizeLandscape : buttonSize);
+	var positionScreenControllerButtons = function(isLandscape) {
+	  var canvasRect = game.context.canvas.getBoundingClientRect();
+	  var screenRect = document.body.getBoundingClientRect();
+	  var sideMargin = (screenRect.width - canvasRect.width)/2;
+	  var size = (isLandscape ? buttonSizeLandscape : buttonSize);
+	  var middleHeight = (parseInt(controllerContainer.style.height)-buttonSize)/2;
 
-    var spacing = (isLandscape ? dPadButtonSpacingLandscape : dPadButtonSpacing);
-    var dPadOffset = dPadCenterLeftOffset - (isLandscape ? 20 : 0);
-    var dPadOffset = (isLandscape ? (sideMargin-size)/2 : dPadCenterLeftOffset);
-    var joystickOffset = (isLandscape ? (sideMargin-size)/2 : joystickCenterRightOffset);
+	  var spacing = (isLandscape ? dPadButtonSpacingLandscape : dPadButtonSpacing);
+	  var dPadOffset = dPadCenterLeftOffset - (isLandscape ? 20 : 0);
+	  var dPadOffset = (isLandscape ? (sideMargin-size)/2 : dPadCenterLeftOffset);
+	  var joystickOffset = (isLandscape ? (sideMargin-size)/2 : joystickCenterRightOffset);
 
-    self.screenController.joystick.style.cssText += "top:"+middleHeight+"px;right:"+joystickOffset+"px;";
-    self.screenController.left.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset-spacing)+"px;";
-    self.screenController.up.style.cssText += "top:"+(middleHeight-spacing)+"px;left:"+dPadOffset+"px;";
-    self.screenController.right.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset+spacing)+"px;";
-    self.screenController.down.style.cssText += "top:"+(middleHeight+spacing)+"px;left:"+dPadOffset+"px;";
+	  self.screenController.joystick.style.cssText += "top:"+middleHeight+"px;right:"+joystickOffset+"px;";
+	  self.screenController.left.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset-spacing)+"px;";
+	  self.screenController.up.style.cssText += "top:"+(middleHeight-spacing)+"px;left:"+dPadOffset+"px;";
+	  self.screenController.right.style.cssText += "top:"+middleHeight+"px;left:"+(dPadOffset+spacing)+"px;";
+	  self.screenController.down.style.cssText += "top:"+(middleHeight+spacing)+"px;left:"+dPadOffset+"px;";
 
-    game.context.canvas.style.zIndex = "1";
-    game.audio.button.style.zIndex = "2";
+	  game.context.canvas.style.zIndex = "1";
 
-    if (isLandscape) {
-      game.context.canvas.style.position = "relative";
-      controllerContainer.style.bottom = canvasRect.height/5+"px";
-      controllerContainer.style.left = "-"+sideMargin+"px";
-      controllerContainer.style.width = screenRect.width+"px";
-    } else {
-      game.context.canvas.style.zIndex = null;
-      game.context.canvas.style.position = null;
-      controllerContainer.style.bottom = null;
-      controllerContainer.style.left = null;
-      controllerContainer.style.width = canvasRect.width+"px";
-    }
-  };
+	  if (isLandscape) {
+	    game.context.canvas.style.position = "relative";
+	    controllerContainer.style.bottom = canvasRect.height/5+"px";
+	    controllerContainer.style.left = "-"+sideMargin+"px";
+	    controllerContainer.style.width = screenRect.width+"px";
+	  } else {
+	    game.context.canvas.style.zIndex = null;
+	    game.context.canvas.style.position = null;
+	    controllerContainer.style.bottom = null;
+	    controllerContainer.style.left = null;
+	    controllerContainer.style.width = canvasRect.width+"px";
+	  }
+	};
 
-  this.setupOnScreenController = function (isLandscape) {
-    setupScreenControllerContainer();
-    setupScreenControllerButtons(isLandscape);
-    setupScreenControllerDPad();
-    setupScreenControllerJoystick();
-    positionScreenControllerButtons(isLandscape);
-  }
+	this.cancelInput = function() {
+	  for (var button in self.key) {
+	    self.key[button] = false;
+	  }
+	  for (var button in self.touch) {
+	    self.touch[button] = false;
+	  }
+	  self.mouse.left = false;
+	  self.mouse.right = false;
+	};
 
-  this.hideOnScreenController = function () {
-    controllerContainer.style.display = "none";
-  }
+	this.setupOnScreenController = function (isLandscape) {
+	  this.hideOnScreenController();
+	  setupScreenControllerContainer();
+	  setupScreenControllerButtons(isLandscape);
+	  setupScreenControllerDPad();
+	  setupScreenControllerJoystick();
+	  positionScreenControllerButtons(isLandscape);
+	  controllerContainer.style.display = "block";
+	}
 
-  this.resize = function (game) {
-    var screenWidth = document.documentElement.clientWidth;
+	this.hideOnScreenController = function () {
+	  controllerContainer.style.display = "none";
+	}
+
+	this.resize = function (canvas) {
+	  var screenWidth = document.documentElement.clientWidth;
 		var screenHeight = document.documentElement.clientHeight;
 
-    if (window.matchMedia("(min-width: 1200px)").matches) {
+	  if (window.matchMedia("(min-width: 1200px)").matches) {
 			//Desktop
 			console.log(`Desktop | ${screenWidth}px x ${screenHeight}px`);
-      game.context.canvas.style.width = "900px";
+	    canvas.style.width = "900px";
 			this.hideOnScreenController();
 		} else if (window.matchMedia("(min-width: 992px)").matches) {
 			//Tablet, landscape
 			console.log(`Tablet, landscape | ${screenWidth}px x ${screenHeight}px`);
-      game.context.canvas.style.width = "800px";
+	    canvas.style.width = "800px";
 			this.setupOnScreenController(true);
 		} else if (
-        window.matchMedia("(min-width: 768px)").matches ||
-        window.matchMedia("(min-width: 600px) and (orientation: portrait)").matches
-      ) {
+	      window.matchMedia("(min-width: 768px)").matches ||
+	      window.matchMedia("(min-width: 600px) and (orientation: portrait)").matches
+	    ) {
 			//Tablet, portrait
 			console.log(`Tablet, portrait | ${screenWidth}px x ${screenHeight}px`);
-      game.context.canvas.style.width = "700px";
+	    canvas.style.width = "700px";
 			this.setupOnScreenController(false);
 		}	else if (window.matchMedia("(min-width: 600px) and (orientation: landscape)").matches) {
-      //Mobile, landscape
-      console.log(`Mobile, landscape | ${screenWidth}px x ${screenHeight}px`);
-      game.context.canvas.style.width = "500px";
-      this.setupOnScreenController(true);
-    } else /*(max-width: 600px)*/{
+	    //Mobile, landscape
+	    console.log(`Mobile, landscape | ${screenWidth}px x ${screenHeight}px`);
+	    canvas.style.width = "500px";
+	    this.setupOnScreenController(true);
+	  } else /*(max-width: 600px)*/{
 			//Mobile portrait
-      console.log(`Mobile, portrait | ${screenWidth}px x ${screenHeight}px`);
-      game.context.canvas.style.width = "350px";
+	    console.log(`Mobile, portrait | ${screenWidth}px x ${screenHeight}px`);
+	    canvas.style.width = "350px";
 			this.setupOnScreenController(false);
 		}
-  }
+	}
 
-  window.addEventListener("keydown", handleKeyDownUp);
-  window.addEventListener("keyup", handleKeyDownUp);
+	window.addEventListener("keydown", handleKeyDownUp);
+	window.addEventListener("keyup", handleKeyDownUp);
+	window.addEventListener("mousedown", handleMouseDownUp);
+	window.addEventListener("mouseup", handleMouseDownUp);
+	window.addEventListener("mousemove", handleMouseMove);
 } //end constructor
 
 Controller.prototype.constructor =  Controller;
