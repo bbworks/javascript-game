@@ -15,6 +15,10 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  _ create isMobile flag that tests "TouchEvent" capability
+  _ audio volume cannot be set by Javascript on mobile...oh well--let's handle for it?
+  X made smarter debugger that exchanges “” (\u201c (8220) \u201d (8221)) -> "" and removes \r\n (13 10) anywhere in the string
+  X fix bug where touch doesn't register mousedown/mouseup--sequence (touchstart....touchend->mousedown->mouseup)--too fast to catch--add touchstart/touchend logic in Controller.handleMouseDownUp()
   X implemented game stop on loss of focus--done, public engine.isRunning and onblur/onfocus DOM event
   X implement audio engine
     * private tracks

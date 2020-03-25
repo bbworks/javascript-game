@@ -25,6 +25,7 @@ MovingObject.prototype.jump = function() {
 	  this.velocityY = -this.jumpHeight;
 	  this.isOnGround = false;
 	  this.canJump = false;
+		game.audio.volume("jump", 0.05);
 		game.audio.play("jump", false, true);
 	}
 };

@@ -20,7 +20,7 @@ MainMenuState.prototype.constructor = MainMenuState;
 
 MainMenuState.prototype.handleInput = function() {
 	if (game.controller.mouse.left) {
-	  this.onExit();
+		this.onExit();
 	  this.nextState = new Level1State(game, this.callback);
 	}
 };

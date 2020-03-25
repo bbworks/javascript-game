@@ -59,7 +59,7 @@ const Game = function(width, aspectRatio) {
 	this.debugger.input.addEventListener("input",
 		function(event) {
 			if(event.inputType === "insertLineBreak") {
-				var js = event.srcElement.value.trimEnd();
+				var js = event.srcElement.value.replace("\r","").replace("\n","").replace("\u201c","\"").replace("\u201d","\"");
 				self.debugger.input.value = js;
 				console.log(eval(js));
 				self.debugger.response.value = eval(js);
@@ -87,6 +87,10 @@ const Game = function(width, aspectRatio) {
 				if (self.stopOnBlur) {
 						console.log("window.onblur()");
 						self.controller.cancelInput();
+						onStart.audioIsPlaying = self.audio.isPlaying() || onStart.audioIsPlaying || false;
+						if (onStart.audioIsPlaying) {
+							self.audio.pause("main");
+						}
 						self.engine.onBlur();
 				}
 			}
@@ -95,6 +99,9 @@ const Game = function(width, aspectRatio) {
 			function() {
 				if (self.stopOnBlur || !self.engine.isRunning) {
 						console.log("window.onfocus()");
+						if (onStart.audioIsPlaying) {
+							self.audio.play("main");
+						}
 						self.engine.onFocus();
 				}
 			}

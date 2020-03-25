@@ -85,21 +85,29 @@ function Controller (game) {
 
 	var handleMouseDownUp = function(event) {
 	  var isOnCanvas = event.srcElement === game.context.canvas;
-	  //self.mouse.x = event.clientX - clientRect.left;
-	  //self.mouse.y = event.clientY - clientRect.top;
-
 	  if (isOnCanvas) {
-	    var down = (event.type === "mousedown") ? true : false;
+			var down;
+			var button = event.button;
+
+			if (event.type === "mousedown" || event.type === "touchstart") {
+				down = true;
+			}
+			else if (event.type === "mouseup" || event.type === "touchend") {
+				down = false;
+			}
+			if (event.type === "touchstart" || event.type === "touchend") {
+				button = 0;
+			}
 
 	    //Assure keys (specifically arrows) don't perform default behavior
 	    if (
-	      event.button === 0  ||
-	      event.button === 2
-	    ) {
+				(button === 0  || button === 2) &&
+				event.type !== "touchstart"
+			) {
 	      event.preventDefault();
 	    }
 
-	    switch (event.button)
+	    switch (button)
 	    {
 	      case 0:
 	        self.mouse.left = down;
@@ -108,15 +116,23 @@ function Controller (game) {
 	        self.mouse.right = down;
 	        break;
 	    }
-	    /*DEBUG*/ //console.log(`Mouse.left: ${self.mouse.left}\r\nMouse.right: ${self.mouse.right}`);
+	    /*DEBUG*/ //console.log(`Event.type: ${event.type}\r\nMouse.left: ${self.mouse.left}\r\nMouse.right: ${self.mouse.right}`);
 	  } //if (isOnCanvas)
 	}
 
 	var handleMouseMove = function(event) {
-	  var clientRect = game.context.canvas.getBoundingClientRect();
-	  self.mouse.x = event.clientX - clientRect.left;
-	  self.mouse.y = event.clientY - clientRect.top;
-	  /*DEBUG*/ //console.log(self.mouse.x, self.mouse.y);
+		var isOnCanvas = event.srcElement === game.context.canvas;
+	  if (isOnCanvas) {
+			var clientRect = game.context.canvas.getBoundingClientRect();
+	  	if (event.type === "mousemove") {
+				self.mouse.x = event.clientX - clientRect.left;
+	  		self.mouse.y = event.clientY - clientRect.top;
+			} else if (event.type === "touchmove") {
+				self.mouse.x = event.touches[0].clientX - clientRect.left;
+	  		self.mouse.y = event.touches[0].clientY - clientRect.top;
+			}
+	  	/*DEBUG*/ //console.log(self.mouse.x, self.mouse.y);
+		}
 	}
 
 	var handleJoystickTouch = function(event) {
@@ -314,6 +330,9 @@ function Controller (game) {
 	window.addEventListener("mousedown", handleMouseDownUp);
 	window.addEventListener("mouseup", handleMouseDownUp);
 	window.addEventListener("mousemove", handleMouseMove);
+	window.addEventListener("touchstart", handleMouseDownUp);
+	window.addEventListener("touchend", handleMouseDownUp);
+	window.addEventListener("touchmove", handleMouseMove);
 } //end constructor
 
 Controller.prototype.constructor =  Controller;

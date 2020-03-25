@@ -182,8 +182,8 @@ function AudioEngine (game, volume, muted) {
 
 	this.setTracks = function(property, value) {
 	  for(i in tracks) {
-	    var track = tracks[i];
-	    track[property] = value;
+	    var _track = tracks[i];
+	    _track[property] = value;
 	  }
 	}
 
@@ -226,9 +226,9 @@ function AudioEngine (game, volume, muted) {
 	  );
 	  this.volumeButton.slider.addEventListener("input",
 	    function(event) {
-	      var input = event.srcElement.value;
+				var input = event.srcElement.value;
 	      master.volume = 1.00*input/100;
-	      self.volume("main", 1.00*input/100);
+	      self.volume("main", master.volume); //handles muting too
 	      self.setTracks("volume", master.volume)
 	      if (!self.isPlaying()) {
 	        self.fade("main", "in", "current", 0.1, null);
