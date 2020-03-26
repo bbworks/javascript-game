@@ -64,13 +64,13 @@ GameObject.prototype = {
 	render: function() {
 	  //Now, draw the animation, or the still image
 	  if (this.animation) {
-	    this.animation.render(game.context, this.getViewportX(), this.getViewportY(), this.width, this.height);
+	    this.animation.render(game.context, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
 	  }
 	  else if (this.sourceX && this.sourceY && this.sourceWidth && this.sourceHeight) {
-	    game.context.drawImage(this.image, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight, this.getViewportX(), this.getViewportY(), this.width, this.height);
+	    game.context.drawImage(this.image, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
 	  }
 	  else {
-	    game.context.drawImage(this.image, this.getViewportX(), this.getViewportY(), this.width, this.height);
+	    game.context.drawImage(this.image, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
 	  }
 	},
 }
