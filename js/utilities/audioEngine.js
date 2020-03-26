@@ -1,6 +1,8 @@
 function AudioEngine (game, volume, muted) {
 	var tracks = {};
 	var interval = {};
+	var hasVolumeControl;
+	var hasVolumeControlSplit = 0.5;
 	var self = this;
 
 	var master = {
@@ -13,6 +15,18 @@ function AudioEngine (game, volume, muted) {
 	  speaker: document.createElement("button"),
 	  slider: document.createElement("input"),
 	}
+
+	var detectVolumeControl = function() {
+		var test = new Audio();
+		test.volume = 0.5;
+		if (test.volume === 1) {
+			return false;
+		}
+		return true;
+	}
+
+	this.getHasVolumeControl = function(value) {return hasVolumeControl;}
+	this.setHasVolumeControl = function(value) {hasVolumeControl = value;}
 
 	var positionVolumeButtons = function() {
 	  var canvasRect = game.context.canvas.getBoundingClientRect();
@@ -35,7 +49,6 @@ function AudioEngine (game, volume, muted) {
 	  if (_track) {
 	    return _track.paused;
 	  }
-	  return null;
 	};
 
 	this.isMuted = function(track = master.track) {
@@ -43,7 +56,6 @@ function AudioEngine (game, volume, muted) {
 	  if (_track) {
 	    return _track.muted;
 	  }
-	  return null;
 	};
 
 	this.isPlaying = function(track = master.track) {
@@ -70,7 +82,11 @@ function AudioEngine (game, volume, muted) {
 	this.volume = function(track, value) {
 	  var _track = tracks[track];
 	  if (_track) {
-	    _track.volume = value;
+	    if (hasVolumeControl) {
+				_track.volume = value;
+			} else {
+				_track.volume = (value >= hasVolumeControlSplit ? 1 : 0);
+			}
 	    if (value === 0 && !_track.muted) {
 	      this.mute(track);
 	    } else if (value > 0 && _track.muted) {
@@ -113,6 +129,18 @@ function AudioEngine (game, volume, muted) {
 	    if (!_track.paused) {
 	      this.pause(track);
 	    }
+			if (!hasVolumeControl) {
+				if (fade === "in") {
+					this.play(track, true);
+				} else {
+					this.mute(track);
+				}
+				toggleVolumeButtons();
+				if (callback) {
+					callback();
+				}
+				return;
+			}
 	    if (interval[track] > 0) {
 	      window.clearInterval(interval[track]);
 	    }
@@ -208,6 +236,11 @@ function AudioEngine (game, volume, muted) {
 	  this.volumeButton.slider.style.zIndex = "1"; //assure it displays overtop of canvas
 	  this.volumeButton.speaker.style.zIndex = "1"; //assure it displays overtop of canvas
 
+		hasVolumeControl = detectVolumeControl();
+		if (!hasVolumeControl) {
+			master.volume = 1;
+		}
+
 	  toggleVolumeButtons();
 	  positionVolumeButtons();
 	  document.body.appendChild(this.volumeButton.speaker);
@@ -226,8 +259,13 @@ function AudioEngine (game, volume, muted) {
 	  );
 	  this.volumeButton.slider.addEventListener("input",
 	    function(event) {
-				var input = event.srcElement.value;
-	      master.volume = 1.00*input/100;
+				if (!hasVolumeControl) {
+					var _volume = event.srcElement.value;
+					_volume = (_volume >= hasVolumeControlSplit*100 ? 100 : 0);
+				} else {
+					var _volume = event.srcElement.value;
+				}
+		    master.volume = 1.00*_volume/100;
 	      self.volume("main", master.volume); //handles muting too
 	      self.setTracks("volume", master.volume)
 	      if (!self.isPlaying()) {

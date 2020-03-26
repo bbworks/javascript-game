@@ -9,12 +9,22 @@ const Game = function(width, aspectRatio) {
 
 	this.stopOnBlur = true;
 	this.isPaused = false;
+	this.isTouchable = null;
 	var onStart = {
 		audioIsPlaying: null,
 	};
 
-	this.resize = function(event) {
-		self.controller.resize(self.context.canvas);
+	var detectTouch = function() {
+		try {
+	    document.createEvent("TouchEvent");
+	    return true;
+	  } catch (exception) {
+	    return false;
+	  }
+	};
+
+	this.resize = function() {
+		self.controller.resize(self.context.canvas, self.isTouchable);
 		self.audio.resize();
 	}
 
@@ -80,6 +90,7 @@ const Game = function(width, aspectRatio) {
 		//Setup game
 		this.audio.init();
 		this.resize();
+		this.isTouchable = detectTouch();
 		window.addEventListener("resize", this.resize);
 		window.addEventListener("orientationchange", this.resize);
 		window.addEventListener("blur",

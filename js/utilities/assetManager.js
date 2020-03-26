@@ -130,23 +130,39 @@ AssetManager.prototype.initLoadingScreen = function(game) {
 	var canvas = game.context.canvas.getBoundingClientRect();
 	var loadingBarWidth = canvas.width*0.75;
 	var loadingBarHeight = 25;
-	this.gameContent.style.cssText = "position:relative;";
-	this.loadingBar.style.cssText = "position:absolute;text-align:center;width: "+canvas.width*0.75+"px;height:"+loadingBarHeight+"px;background-color:lightgray;top:"+(canvas.height-loadingBarHeight)/2+"px;left:"+(canvas.width-loadingBarWidth)/2+"px;";
-	this.loadedBar.style.cssText = "position:absolute;top:0;left:0;width: 0%;height:100%;background-color:rgba(255, 145, 48, 0.7)";
+
+	this.gameContent.style.position = "relative";
+
+	this.loadingBar.style.position = "absolute";
+	this.loadingBar.style.textAlign = "center";
+	this.loadingBar.style.width = canvas.width*0.75+"px";
+	this.loadingBar.style.height = loadingBarHeight+"px";
+	this.loadingBar.style.backgroundColor = "lightgray";
+	this.loadingBar.style.top = (canvas.height-loadingBarHeight)/2+"px";
+	this.loadingBar.style.left = (canvas.width-loadingBarWidth)/2+"px";
+	this.loadingBar.insertAdjacentHTML("afterbegin", "Loading..."); //innerHTML REPLACES element HTML (and replaces childs elements)--append the HTML instead with insertAdjacentHTML
+
+	this.loadedBar.style.position = "absolute";
+	this.loadedBar.style.top = 0;
+	this.loadedBar.style.left = 0;
+	this.loadedBar.style.width = 0;
+	this.loadedBar.style.height = "100%";
+	this.loadedBar.style.backgroundColor = "rgba(255, 145, 48, 0.7)";
+
 };
 
 AssetManager.prototype.updateLoadingScreen = function(counter) {
 	var assetsLoaded = this.paths.length - counter;
 	var percentLoaded = Math.floor((assetsLoaded/this.paths.length)*100);
 
-	//Set the width of the loaded bar back to 0
-	this.loadedBar.style.cssText = this.loadedBar.style.cssText.replace(/width:\s*([\d]+)([\w*%]+)/, "width:"+percentLoaded+"$2");
+	//Set the width of the loaded bar based on our loaded asset
+	this.loadedBar.style.width = percentLoaded+"%";
 };
 
 AssetManager.prototype.resetLoadingScreen = function() {
 	//Set the width of the loaded bar back to 0
-	this.loadedBar.style.cssText = this.loadedBar.style.cssText.replace(/width:\s*([\d]+)([\w*%]+)/, "width:0$2");
-
+	this.loadedBar.style.width = 0;
+	
 	//Now hide the loading bar
 	this.loadingBar.style.display = "none";
 };

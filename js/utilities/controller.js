@@ -290,20 +290,18 @@ function Controller (game) {
 	  controllerContainer.style.display = "none";
 	}
 
-	this.resize = function (canvas) {
+	this.resize = function (canvas, isTouchable) {
 	  var screenWidth = document.documentElement.clientWidth;
 		var screenHeight = document.documentElement.clientHeight;
 
-	  if (window.matchMedia("(min-width: 1200px)").matches) {
+		if (window.matchMedia("(min-width: 1200px)").matches) {
 			//Desktop
 			console.log(`Desktop | ${screenWidth}px x ${screenHeight}px`);
 	    canvas.style.width = "900px";
-			this.hideOnScreenController();
 		} else if (window.matchMedia("(min-width: 992px)").matches) {
 			//Tablet, landscape
 			console.log(`Tablet, landscape | ${screenWidth}px x ${screenHeight}px`);
 	    canvas.style.width = "800px";
-			this.setupOnScreenController(true);
 		} else if (
 	      window.matchMedia("(min-width: 768px)").matches ||
 	      window.matchMedia("(min-width: 600px) and (orientation: portrait)").matches
@@ -311,17 +309,21 @@ function Controller (game) {
 			//Tablet, portrait
 			console.log(`Tablet, portrait | ${screenWidth}px x ${screenHeight}px`);
 	    canvas.style.width = "700px";
-			this.setupOnScreenController(false);
 		}	else if (window.matchMedia("(min-width: 600px) and (orientation: landscape)").matches) {
 	    //Mobile, landscape
 	    console.log(`Mobile, landscape | ${screenWidth}px x ${screenHeight}px`);
 	    canvas.style.width = "500px";
-	    this.setupOnScreenController(true);
 	  } else /*(max-width: 600px)*/{
 			//Mobile portrait
 	    console.log(`Mobile, portrait | ${screenWidth}px x ${screenHeight}px`);
 	    canvas.style.width = "350px";
-			this.setupOnScreenController(false);
+		}
+
+		if (isTouchable) {
+			var isLandscape = (window.matchMedia("(orientation: landscape)").matches ? true : false);
+			this.setupOnScreenController(isLandscape);
+		} else {
+			this.hideOnScreenController();
 		}
 	}
 
