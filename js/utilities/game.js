@@ -89,8 +89,8 @@ const Game = function(width, aspectRatio) {
 
 		//Setup game
 		this.audio.init();
+		this.isTouchable = detectTouch(); //Find this BEFORE calling resize()
 		this.resize();
-		this.isTouchable = detectTouch();
 		window.addEventListener("resize", this.resize);
 		window.addEventListener("orientationchange", this.resize);
 		window.addEventListener("blur",
