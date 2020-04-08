@@ -72,7 +72,7 @@ function AudioEngine (game, volume, muted) {
 	    if (master.muted !== _track.muted) {
 	      _track.muted = master.muted;
 	    }
-	    if (disrupt) {
+	    if (disrupt && !_track.paused) {
 	      this.stop(track);
 	    }
 	    _track.play();

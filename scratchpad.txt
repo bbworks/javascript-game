@@ -15,6 +15,22 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
+  _ improve collision detection by implementing broad phase detection via a quadtree?
+    * use quadTree in collision detection
+    checkCollision(object) {
+        var testObjects = quadTree.retreive(object);
+        for(var i in testObjects) {
+          var testObject = testObjects[i];
+          if (object !== testObject & this.isColliding(object, testObject)) {
+            object.onCollision(testObject);
+          }
+        }
+      }
+  X make built-in debugger even better--oh yeah
+    * now accepts console.log() and will log to response textarea in return
+    * now individually evaluates each separate statement
+    * now expands out property key-value pairs for objects (including arrays)
+  X implement Rectangle class for GameObject.position?--Position class
   X get rid of annoying "Loading..." in the very beginning of page load
   X create isTouchable flag that tests "TouchEvent" capability
   X audio volume cannot be set by Javascript on mobile...oh well--let's handle for it?

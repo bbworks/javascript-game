@@ -1,5 +1,5 @@
 function MovingObject (x, y, width, height, speed, accel, jumpHeight, gravity, game) {
-	GameObject.call(this, x, y, width, height)
+	GameObject.call(this, x, y, width, height, game);
 
 	//Declare public properties
 	this.speed = speed;
@@ -71,15 +71,15 @@ MovingObject.prototype.update = function() {
 
 	//Horizontally--as long as we can, move left
 	if (
-	  this.x+this.velocityX >= 0 &&
-	  this.getRight()+this.velocityX <= game.world.object.tilesheet.width
+	  this.position.x+this.velocityX >= 0 &&
+	  this.position.getRight()+this.velocityX <= game.world.tilesheet.children.level.position.width
 	) {
-	  this.x += this.velocityX;
+	  this.position.x += this.velocityX;
 	}
 
 	//Vertically--apply gravity
 	this.velocityY += this.gravity;
-	this.y += this.velocityY;
+	this.position.y += this.velocityY;
 	this.isOnGround = false;
 
 	GameObject.prototype.update.call(this);

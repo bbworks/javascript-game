@@ -41,9 +41,21 @@ State.prototype.setupObjects = function(returnAssets) {
 	if (returnAssets) {
 	  this.object = game.assetManager.object;
 	  this.audio = game.assetManager.audio;
+		this.tilesheet = game.assetManager.tilesheet;
 	}
 
 	//And now, set it for the game
-	game.world.object = this.object;
+	game.world.object = new Container(this.object);
+	//Before we lose the coins from the TileSheet,
+	// store them in Game.world.object
+	if (this.tilesheet.level) {
+		if (this.tilesheet.level.coins) {
+			game.world.object.add(this.tilesheet.level.coins, "coins");
+		}
+		if (this.tilesheet.level.platforms) {
+			game.world.object.add(this.tilesheet.level.platforms, "platforms");
+		}
+	}
+	game.world.tilesheet = new Container(this.tilesheet);
 	game.audio.loadAssets(this.audio);
 };

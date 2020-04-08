@@ -29,7 +29,7 @@ MainMenuState.prototype.render = function() {
 	if (!this.rendered) {
 	  //Draw the start screen background
 	  game.context.globalAlpha = 0.9;
-	  game.context.drawImage(game.world.object.startScreenImage.image,0,0,game.context.canvas.width, game.context.canvas.height);
+	  game.context.drawImage(game.world.object.children.startScreenImage.image,0,0,game.context.canvas.width, game.context.canvas.height);
 	  game.context.globalAlpha = 1;
 
 	  //Draw the title

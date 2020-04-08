@@ -3,6 +3,7 @@ function AssetManager (game) {
 	this.assets = {};
 	this.object = {};
 	this.audio = {};
+	this.tilesheet = {};
 	//this.successAssets;
 	//this.errorAssets;
 
@@ -27,7 +28,7 @@ AssetManager.prototype.createObject = function(asset) {
 	      update: function() {},
 	      render: function() {
 	        game.context.fillStyle = asset.style;
-	        game.context.fillRect(asset.x1,asset.y1,asset.x2,asset.y2);
+	        game.context.fillRect(asset.position.x,asset.position.y,asset.position.width,asset.position.height);
 	      }
 	    };
 	    onload(); //Manually call the onload function, as a rectangle doesn't need to load
@@ -53,8 +54,8 @@ AssetManager.prototype.createObject = function(asset) {
 	    this.object[asset.name].image.src = asset.src;
 	    break;
 	  case "tilesheet":
-	    this.object[asset.name] = new TileSheet(16, game);
-	    this.object[asset.name].image.src = asset.src;
+	    this.tilesheet[asset.name] = new TileSheet(16, game);
+	    this.tilesheet[asset.name].image.src = asset.src;
 	    break;
 	} //end switch
 };
@@ -108,14 +109,17 @@ AssetManager.prototype.assignAssets = function() {
 	for (var i in this.object) {
 	  var object = this.object[i];
 	  object.image = this.assets[object.image.attributes.src.value];
-	  if (object instanceof TileSheet) {
-	    object.addLevelMap(game.state.top().levelMap);
-	  }
 	}
 
 	for (var i in this.audio) {
 	  var audio = this.audio[i];
 	  audio = this.assets[audio.attributes.src.value];
+	}
+
+	for (var i in this.tilesheet) {
+	  var tilesheet = this.tilesheet[i];
+	  tilesheet.image = this.assets[tilesheet.image.attributes.src.value];
+		tilesheet.addLevelMap(game.state.top().levelMap);
 	}
 };
 
@@ -124,6 +128,7 @@ AssetManager.prototype.clearAssets = function() {
 	this.assets = {};
 	this.object = {};
 	this.audio = {};
+	this.tilesheet = {};
 };
 
 AssetManager.prototype.initLoadingScreen = function(game) {
@@ -148,7 +153,6 @@ AssetManager.prototype.initLoadingScreen = function(game) {
 	this.loadedBar.style.width = 0;
 	this.loadedBar.style.height = "100%";
 	this.loadedBar.style.backgroundColor = "rgba(255, 145, 48, 0.7)";
-
 };
 
 AssetManager.prototype.updateLoadingScreen = function(counter) {
@@ -162,7 +166,7 @@ AssetManager.prototype.updateLoadingScreen = function(counter) {
 AssetManager.prototype.resetLoadingScreen = function() {
 	//Set the width of the loaded bar back to 0
 	this.loadedBar.style.width = 0;
-	
+
 	//Now hide the loading bar
 	this.loadingBar.style.display = "none";
 };

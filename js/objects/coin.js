@@ -1,5 +1,5 @@
 function Coin (imagePath, x, y, width, height, game) {
-	GameObject.call(this, x, y, width, height);
+	GameObject.call(this, x, y, width, height, game);
 
 	this.image.src = imagePath;
 	const frames = [

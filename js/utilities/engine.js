@@ -5,7 +5,6 @@ function Engine (fps, update, render) {
 	var fpsContainer;
 	var isUpdated;
 	var animationFrame;
-	var self = this;
 	var buffer = 0;
 	var throttleCounter = 0;
 	var deThrottleCounter = 0;
@@ -33,7 +32,7 @@ function Engine (fps, update, render) {
 	document.body.appendChild(fpsContainer);
 
 	var handleThrottle = function() {
-		if (self.engineFPS <= throttleCap) {
+		if (this.engineFPS <= throttleCap) {
 			throttleCounter++;
 			if (throttleCounter === throttleTimer) {
 				deThrottleCounter = 0;
@@ -45,29 +44,29 @@ function Engine (fps, update, render) {
 			throttleCounter = 0;
 			deThrottleCounter++;
 			if (deThrottleCounter === throttleTimer) {
-				console.log(`Dethrottling game back to ${self.fps}.`);
+				console.log(`Dethrottling game back to ${this.fps}.`);
 				this.throttleFps = this.fps;
 			}
 		}
 	};
 
 	var calculateFps = function(type) {
-		self[type+"CurrentTimestamp"] = window.performance.now();
-		self[type+"DeltaTimestamp"] = self[type+"CurrentTimestamp"]-self[type+"LastTimestamp"];
-		self[type+"FPS"] = Math.floor(1000/(self[type+"DeltaTimestamp"]));
-		self[type+"LastTimestamp"] = self[type+"CurrentTimestamp"];
+		this[type+"CurrentTimestamp"] = window.performance.now();
+		this[type+"DeltaTimestamp"] = this[type+"CurrentTimestamp"]-this[type+"LastTimestamp"];
+		this[type+"FPS"] = Math.floor(1000/(this[type+"DeltaTimestamp"]));
+		this[type+"LastTimestamp"] = this[type+"CurrentTimestamp"];
 		if (type === "engine") {
-			buffer += self.engineDeltaTimestamp;
+			buffer += this.engineDeltaTimestamp;
 			handleThrottle();
 		}
 	};
 
 	var updateFps = function() {
-	  	fpsContainer.innerHTML = `Engine FPS: ${self.engineFPS} | Game FPS: ${self.gameFPS}`; //Only display updated value every so often
+	  	fpsContainer.innerHTML = `Engine FPS: ${this.engineFPS} | Game FPS: ${this.gameFPS}`; //Only display updated value every so often
 	};
 
 	var handleGameUpdate = function() {
-		if (buffer < 1000/self.throttleFps) {
+		if (buffer < 1000/this.throttleFps) {
 			return false;
 		}
 		return true;
@@ -75,47 +74,47 @@ function Engine (fps, update, render) {
 
 	//Declare public functions
 	this.onBlur = function() {
-		self.isRunning = false;
+		this.isRunning = false;
 	};
 
 	this.onFocus = function() {
-		self.isRunning = true;
+		this.isRunning = true;
 	};
 
 	this.start = function() {
 		console.log("engine.start()");
-		self.isRunning = true;
-		self.run();
+		this.isRunning = true;
+		this.run();
 	};
 
 	this.run = function() {
 		//request the next animation frame FIRST, so we can cancel it during our run if needed without going into another loop
-		animationFrame = window.requestAnimationFrame(self.run);
+		animationFrame = window.requestAnimationFrame(this.run.bind(this));
 
 		//Get the frames per second (number of times we can loop in one second based on current delta (1000ms / delta in ms))
-		calculateFps("engine");
-		if (handleGameUpdate()) {
-			calculateFps("game");
+		calculateFps.call(this, "engine");
+		if (handleGameUpdate.apply(this)) {
+			calculateFps.call(this, "game");
 		}
 
 		//Visibly update the frames per second on-screen every 50 executions
 		if (animationFrame % 50 === 0) {
-			updateFps();
+			updateFps.apply(this);
 		}
 
 		//Run the update as many times as necessary, based on our specified frame rate and on how long its been since we last updated
-		while (handleGameUpdate()) {
-			buffer -= 1000/self.throttleFps;
-			if (self.isRunning) {
-				update();
+		while (handleGameUpdate.apply(this)) {
+			buffer -= 1000/this.throttleFps;
+			if (this.isRunning) {
+				update.apply(this);
 			}
 			isUpdated = true;
 		}
 
 		//Run the render, only if the engine is running and also if we actually updated
 		if (isUpdated) {
-			if (self.isRunning) {
-				render();
+			if (this.isRunning) {
+				render.apply(this);
 			}
 			isUpdated = false;
 		}
@@ -123,8 +122,8 @@ function Engine (fps, update, render) {
 
 	this.stop = function() {
 		console.log("engine.stop()");
-		cancelAnimationFrame(animationFrame);
-		self.isRunning = false;
+		window.cancelAnimationFrame(animationFrame);
+		this.isRunning = false;
 	};
 }
 

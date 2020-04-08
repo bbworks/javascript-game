@@ -21,7 +21,7 @@ function StateStack(game) {
 	  state.nextState = null;
 	  state.setupObjects(false);
 	  game.start();
-	  
+
 	};
 	this.handleInput = function() {
 	  var state = this.top();
@@ -40,11 +40,13 @@ function StateStack(game) {
 	};
 	this.updateState = function() {
 	  var state = this.top();
-	  if (state.nextState === "pop") {
-	    this.pop();
-	  } else if (state.nextState) {
-	    this.push(state.nextState)
-	  }
+		if (state.nextState) {
+			if (state.nextState === "pop") {
+		    this.pop();
+		  } else {
+		    this.push(state.nextState)
+		  }
+		}
 	};
 } //end constructor
 

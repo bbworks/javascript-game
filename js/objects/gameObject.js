@@ -1,10 +1,8 @@
-function GameObject (x, y, width, height) {
+function GameObject (x, y, width, height, game) {
 	//Declare public properties
 	this.image = new Image();
-	this.x = x;
-	this.y = y;
-	this.width = width;
-	this.height = height;
+	this.position = new Position(x, y, width, height)
+	this.sourcePosition = null;
 	this.velocityX = 0;
 	this.velocityY = 0;
 	this.viewportOffsetX = 0;
@@ -21,40 +19,6 @@ function GameObject (x, y, width, height) {
 
 GameObject.prototype = {
 	constructor: GameObject,
-	getViewportX: function() {
-	  return this.x - this.viewportOffsetX;
-	},
-	getViewportY: function() {
-	  return this.y - this.viewportOffsetY;
-	},
-	getTop: function() {
-	  return this.y;
-	},
-	getLeft: function() {
-	  return this.x;
-	},
-	getBottom: function() {
-	  return this.y + this.height;
-	},
-	getRight: function() {
-	  return this.x + this.width;
-	},
-	getViewportTop: function() {
-	  return this.getViewportY();
-	},
-	getViewportLeft: function() {
-	  return this.getViewportX();
-	},
-	getViewportBottom: function() {
-	  return this.getViewportY() + this.height;
-	},
-	getViewportRight: function() {
-	  return this.getViewportX() + this.width;
-	},
-	scroll: function(x, y) {
-	  this.viewportOffsetX = x;
-	  this.viewportOffsetY = y;
-	},
 	update: function() {
 	  //Now update the animation if we have one
 	  if (this.animation) {
@@ -64,13 +28,13 @@ GameObject.prototype = {
 	render: function() {
 	  //Now, draw the animation, or the still image
 	  if (this.animation) {
-	    this.animation.render(game.context, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
+	    this.animation.render(game.context, Math.floor(this.position.getViewportX()), Math.floor(this.position.getViewportY()), this.position.width, this.position.height);
 	  }
-	  else if (this.sourceX && this.sourceY && this.sourceWidth && this.sourceHeight) {
-	    game.context.drawImage(this.image, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
+	  else if (this.sourcePosition) {
+		    game.context.drawImage(this.image, this.sourcePosition.x, this.sourcePosition.y, this.sourcePosition.width, this.sourcePosition.height, Math.floor(this.position.getViewportX()), Math.floor(this.position.getViewportY()), this.position.width, this.position.height);
 	  }
 	  else {
-	    game.context.drawImage(this.image, Math.floor(this.getViewportX()), Math.floor(this.getViewportY()), this.width, this.height);
+	    game.context.drawImage(this.image, Math.floor(this.position.getViewportX()), Math.floor(this.position.getViewportY()), this.position.width, this.position.height);
 	  }
 	},
 }
