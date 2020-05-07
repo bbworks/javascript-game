@@ -509,13 +509,14 @@ function Controller (game) {
 	  var middleHeight = (parseInt(controllerContainer.style.height)-buttonSize)/2;
 
 	  var spacing = (isLandscape ? dPadButtonSpacingLandscape : dPadButtonSpacing);
+		var horizontalSpacing = spacing * (dPadPosition === "left" ? 1 : -1); //account for left or right--if right, make negaative
 	  var dPadOffset = (isLandscape ? (sideMargin-size)/2 : dPadCenterOffset);
 	  var joystickOffset = (isLandscape ? (sideMargin-size)/2 : joystickCenterOffset);
 
 	  self.screenController.joystick.style.cssText += "top:"+middleHeight+"px;"+joystickPosition+":"+joystickOffset+"px;";
-	  self.screenController.left.style.cssText += "top:"+middleHeight+"px;"+dPadPosition+":"+(dPadOffset-spacing)+"px;";
+	  self.screenController.left.style.cssText += "top:"+middleHeight+"px;"+dPadPosition+":"+(dPadOffset-horizontalSpacing)+"px;";
 	  self.screenController.up.style.cssText += "top:"+(middleHeight-spacing)+"px;"+dPadPosition+":"+dPadOffset+"px;";
-	  self.screenController.right.style.cssText += "top:"+middleHeight+"px;"+dPadPosition+":"+(dPadOffset+spacing)+"px;";
+	  self.screenController.right.style.cssText += "top:"+middleHeight+"px;"+dPadPosition+":"+(dPadOffset+horizontalSpacing)+"px;";
 	  self.screenController.down.style.cssText += "top:"+(middleHeight+spacing)+"px;"+dPadPosition+":"+dPadOffset+"px;";
 
 	  game.context.canvas.style.zIndex = "1";
