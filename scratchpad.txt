@@ -15,7 +15,8 @@ LATEST RELEASE
   //- utils/   // Contains global constants/utility functions
 
 ##LAST OBJECTIVE
-  _ improve collision detection by implementing broad phase detection via a quadtree?
+  X pull already-ready objects from pool?
+   improve collision detection by implementing broad phase detection via a quadtree?
     * use quadTree in collision detection
     checkCollision(object) {
         var testObjects = quadTree.retreive(object);
@@ -26,6 +27,7 @@ LATEST RELEASE
           }
         }
       }
+    * awaiting deployment
   X make built-in debugger even better--oh yeah
     * now accepts console.log() and will log to response textarea in return
     * now individually evaluates each separate statement

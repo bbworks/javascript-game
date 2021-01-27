@@ -127,16 +127,6 @@ canvas {
   background-color: rgb(50,50,50);
 }
 
-#fps-container {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: rgb(245,245,245);
-  text-align: center;
-  font-family: monospace;
-  z-index: 99;
-}
-
 #volume-slider {
   appearance: none;
   -webkit-appearance: none;
